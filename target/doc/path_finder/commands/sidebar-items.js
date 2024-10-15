@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["add","delete","flush","list","restore"]};

@@ -1,0 +1,107 @@
+.TH PATHFINDER 1 "October 2023" "Version 1.0" "User Commands"
+
+.SH NAME
+pathfinder \- A powerful tool for managing your system's PATH environment variable.
+
+.SH SYNOPSIS
+.B pathfinder
+[\fICOMMAND\fR] [\fIOPTIONS\fR]
+
+.SH DESCRIPTION
+\fIpathfinder\fR simplifies the management of your system's PATH environment variable. It allows you to add and remove directories, list current PATH entries, view backup history, and restore previous PATH configurations.
+
+.SH COMMANDS
+.TP
+.B add <directory>
+Add a directory to your PATH.
+
+.TP
+.B remove <directory>
+Remove a directory from your PATH.
+
+.TP
+.B list
+List all current entries in your PATH.
+
+.TP
+.B history
+Show the backup history of your PATH.
+
+.TP
+.B restore [\-\-timestamp <timestamp>]
+Restore your PATH from a previous backup. If no timestamp is provided, the most recent backup is used.
+
+.SH OPTIONS
+.TP
+.B \-\-help
+Display help information about \fIpathfinder\fR.
+
+.TP
+.B \-\-version
+Display version information.
+
+.SH EXAMPLES
+.TP
+Add a directory to your PATH:
+
+# pathfinder add ~/my/custom/bin
+
+.TP
+Remove a directory from your PATH:
+
+# pathfinder remove ~/my/old/bin
+
+.TP
+List current PATH entries:
+
+# pathfinder list
+
+.TP
+Show backup history:
+
+# pathfinder history
+
+.TP
+Restore PATH from a specific backup:
+
+# pathfinder restore \-\-timestamp 20231007_120000
+
+.TP
+Restore PATH from the most recent backup:
+
+# pathfinder restore
+
+.SH FILES
+.TP
+.I ~/.pathfinder_backups/
+Directory where PATH backups are stored as JSON files.
+
+.TP
+.I ~/.bashrc, ~/.zshrc, ~/.profile
+Shell configuration files that may be modified by \fIpathfinder\fR to make PATH changes persistent.
+
+.SH ENVIRONMENT
+.TP
+.B SHELL
+Determines the user's shell, which is used to identify the appropriate configuration file to update.
+
+.SH DIAGNOSTICS
+Exit status is 0 on success, non-zero on failure.
+
+.SH SEE ALSO
+bash(1), zsh(1), env(1)
+
+.SH AUTHOR
+Your Name
+
+.SH LICENSE
+This software is released under the MIT License.
+
+---
+
+**Note:** To install the man page, copy it to your man directory and update the man database:
+
+```bash
+sudo cp pathfinder.1 /usr/local/share/man/man1/
+sudo mandb
+```

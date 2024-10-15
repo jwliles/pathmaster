@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["create_backup","get_backup_dir","show_history"],"struct":["Backup"]};

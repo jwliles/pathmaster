@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["expand_path","get_path_entries","set_path_entries","update_shell_config"]};
