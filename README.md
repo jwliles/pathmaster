@@ -47,7 +47,7 @@ Managing the `PATH` variable is crucial for system performance and command execu
 ### **Prerequisites**
 
 - **Rust Toolchain**: Ensure you have Rust installed. You can install Rust using [rustup](https://www.rust-lang.org/tools/install):
-
+  
   ```bash
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
   ```
@@ -55,30 +55,30 @@ Managing the `PATH` variable is crucial for system performance and command execu
 ### **Building from Source**
 
 1. **Clone the Repository**
-
+   
    ```bash
    git clone https://github.com/jwliles/pathfinder.git
    cd pathfinder
    ```
 
 2. **Build the Project**
-
+   
    ```bash
    cargo build --release
    ```
-
+   
    This command compiles the project in release mode, producing an optimized binary.
 
 3. **Install the Binary**
-
+   
    Optionally, you can install the binary system-wide:
-
+   
    ```bash
    sudo cp target/release/pathfinder /usr/local/bin/
    ```
-
+   
    Or add it to your `PATH`:
-
+   
    ```bash
    export PATH="$PATH:$(pwd)/target/release"
    ```
@@ -158,25 +158,25 @@ pathfinder restore [--timestamp <timestamp>]
 ### **Examples**
 
 - **Add a Directory to PATH**
-
+  
   ```bash
   pathfinder add ~/my/custom/bin
   ```
 
 - **Remove a Directory from PATH**
-
+  
   ```bash
   pathfinder remove ~/my/old/bin
   ```
 
 - **List PATH Entries**
-
+  
   ```bash
   pathfinder list
   ```
-
+  
   **Sample Output:**
-
+  
   ```
   Current PATH entries:
   - /usr/local/bin
@@ -189,13 +189,13 @@ pathfinder restore [--timestamp <timestamp>]
   ```
 
 - **Show Backup History**
-
+  
   ```bash
   pathfinder history
   ```
-
+  
   **Sample Output:**
-
+  
   ```
   Available backups:
   - backup_20231007_120000.json
@@ -203,13 +203,13 @@ pathfinder restore [--timestamp <timestamp>]
   ```
 
 - **Restore PATH from a Specific Backup**
-
+  
   ```bash
   pathfinder restore --timestamp 20231007_120000
   ```
 
 - **Restore PATH from the Most Recent Backup**
-
+  
   ```bash
   pathfinder restore
   ```
@@ -243,20 +243,21 @@ pathfinder restore [--timestamp <timestamp>]
 Contributions are welcome! Please follow these steps:
 
 1. **Fork the Repository**
-2. **Create a Feature Branch**
 
+2. **Create a Feature Branch**
+   
    ```bash
    git checkout -b feature/your-feature
    ```
 
 3. **Commit Your Changes**
-
+   
    ```bash
    git commit -am 'Add your feature'
    ```
 
 4. **Push to the Branch**
-
+   
    ```bash
    git push origin feature/your-feature
    ```
