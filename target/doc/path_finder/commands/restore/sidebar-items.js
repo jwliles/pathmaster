@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["execute","get_latest_backup"]};
