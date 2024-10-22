@@ -2,6 +2,7 @@
 name = "pathfinder"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
 
 [dependencies]
 dirs-next = "2.0.0"
