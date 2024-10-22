@@ -2,10 +2,6 @@
 
 # pathfinder
 
-**Version:** 0.1.0
-**Author:** Justin Wayne Liles
-**License:** MIT License
-
 ## **Table of Contents**
 
 - [**README**](#readme)
