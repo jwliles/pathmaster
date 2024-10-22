@@ -1,9 +1,34 @@
+//! Command implementation for restoring PATH from backups.
+//!
+//! This module handles:
+//! - Restoring PATH from specified backup files
+//! - Finding and using the most recent backup
+//! - Validating backup files
+//! - Updating shell configuration after restore
+
 use crate::backup::get_backup_dir;
 use crate::utils;
 use std::env;
 use std::fs::File;
 use std::io::Read;
 
+/// Executes the restore command to recover PATH from a backup
+///
+/// # Arguments
+///
+/// * `timestamp` - Optional timestamp string to specify which backup to restore.
+///                 If None, restores from the most recent backup.
+///
+/// # Example
+///
+/// ```
+/// // Restore from specific backup
+/// let timestamp = Some(String::from("20240321120000"));
+/// commands::restore::execute(&timestamp);
+///
+/// // Restore from most recent backup
+/// commands::restore::execute(&None);
+/// ```
 pub fn execute(timestamp: &Option<String>) {
     let backup_dir = get_backup_dir();
 
@@ -49,6 +74,16 @@ pub fn execute(timestamp: &Option<String>) {
     println!("PATH restored from backup: {}", backup_file.display());
 }
 
+/// Gets the most recent backup file
+///
+/// # Arguments
+///
+/// * `backup_dir` - PathBuf pointing to the backup directory
+///
+/// # Returns
+///
+/// Option containing PathBuf to the most recent backup file,
+/// or None if no backups exist
 fn get_latest_backup(backup_dir: &std::path::Path) -> Option<std::path::PathBuf> {
     let mut backups: Vec<_> = std::fs::read_dir(backup_dir).ok()?.flatten().collect();
     backups.sort_by_key(|dir| dir.file_name());

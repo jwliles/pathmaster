@@ -1,7 +1,27 @@
+//! Command implementation for adding directories to PATH.
+//!
+//! This module handles:
+//! - Validating new directories
+//! - Adding directories to PATH
+//! - Updating shell configuration
+//! - Creating backups before modifications
+
 use crate::backup;
 use crate::utils;
 use std::path::PathBuf;
 
+/// Executes the add command to include new directories in PATH
+///
+/// # Arguments
+///
+/// * `directories` - A slice of strings containing directories to add
+///
+/// # Example
+///
+/// ```
+/// let dirs = vec![String::from("~/bin")];
+/// commands::add::execute(&dirs);
+/// ```
 pub fn execute(directories: &[String]) {
     // Expand and normalize the directory paths
     let dirs_to_add: Vec<PathBuf> = directories

@@ -1,3 +1,13 @@
+//! Pathfinder - A powerful tool for managing your system's PATH environment variable.
+//!
+//! This binary provides a command-line interface for:
+//! - Adding directories to PATH
+//! - Removing directories from PATH
+//! - Listing current PATH entries
+//! - Managing PATH backups
+//! - Validating PATH entries
+//! - Flushing invalid entries from PATH
+
 use clap::{Parser, Subcommand};
 use commands::validator;
 
@@ -5,6 +15,7 @@ mod backup;
 mod commands;
 mod utils;
 
+/// CLI configuration and argument parsing for pathfinder
 #[derive(Parser)]
 #[command(name = "pathfinder")]
 #[command(version = "0.1.0")]
@@ -14,6 +25,7 @@ struct Cli {
     command: Commands,
 }
 
+/// Available commands for pathfinder
 #[derive(Subcommand)]
 enum Commands {
     /// Add directories to the PATH

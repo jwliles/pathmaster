@@ -1,7 +1,29 @@
-// src/commands/flush.rs
+//! Command implementation for removing invalid paths from PATH.
+//!
+//! This module handles:
+//! - Identifying non-existent directories in PATH
+//! - Creating backups before modification
+//! - Removing invalid entries
+//! - Updating shell configuration
+
 use crate::backup;
 use crate::utils;
 
+/// Executes the flush command to remove non-existing paths from PATH
+///
+/// This function will:
+/// 1. Create a backup of the current PATH
+/// 2. Check each directory in PATH for existence
+/// 3. Remove directories that don't exist
+/// 4. Update the PATH environment variable
+/// 5. Update shell configuration
+///
+/// # Example
+///
+/// ```
+/// commands::flush::execute();
+/// // This will remove all non-existing directories from PATH
+/// ```
 pub fn execute() {
     // Backup current PATH
     if let Err(e) = backup::create_backup() {

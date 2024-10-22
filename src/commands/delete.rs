@@ -1,6 +1,26 @@
+//! Command implementation for removing directories from PATH.
+//!
+//! This module handles:
+//! - Removing specified directories from PATH
+//! - Creating backups before modification
+//! - Updating shell configuration
+//! - Maintaining PATH integrity
+
 use crate::backup;
 use crate::utils;
 
+/// Executes the delete command to remove directories from PATH
+///
+/// # Arguments
+///
+/// * `directories` - A slice of strings containing directories to remove
+///
+/// # Example
+///
+/// ```
+/// let dirs = vec![String::from("~/old/bin")];
+/// commands::delete::execute(&dirs);
+/// ```
 pub fn execute(directories: &[String]) {
     // Backup current PATH
     if let Err(e) = backup::create_backup() {
