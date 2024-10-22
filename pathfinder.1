@@ -1,75 +1,142 @@
-.TH PATHFINDER 1 "October 2023" "Version 1.0" "User Commands"
+.TH PATHFINDER 1 "April 2024" "Version 1.0" "User Commands"
 
 .SH NAME
-pathfinder \- A powerful tool for managing your system's PATH environment variable.
+pathfinder \- A powerful tool for managing your system's PATH environment variable
 
 .SH SYNOPSIS
 .B pathfinder
-[\fICOMMAND\fR] [\fIOPTIONS\fR]
+.IR COMMAND
+[OPTIONS] [ARGUMENTS]
 
 .SH DESCRIPTION
-\fIpathfinder\fR simplifies the management of your system's PATH environment variable. It allows you to add and remove directories, list current PATH entries, view backup history, and restore previous PATH configurations.
+.B pathfinder
+is a comprehensive tool for managing your system's PATH environment variable. It provides functionality for adding and removing directories, validating PATH entries, managing backups, and maintaining PATH integrity.
 
 .SH COMMANDS
 .TP
-.B add <directory>
-Add a directory to your PATH.
+.BR add ", " \-a " <directory>..."
+Add one or more directories to your PATH. Each directory is validated before addition.
+Multiple directories can be specified at once.
 
 .TP
-.B remove <directory>
-Remove a directory from your PATH.
+.BR delete ", " \-d " <directory>..."
+Remove one or more directories from your PATH.
+Alias: remove
 
 .TP
-.B list
-List all current entries in your PATH.
+.BR list ", " \-l
+List all current entries in your PATH, displaying them in a clear, readable format.
 
 .TP
-.B history
-Show the backup history of your PATH.
+.BR history ", " \-y
+Show the backup history of your PATH, displaying available backups with timestamps.
 
 .TP
-.B restore [\-\-timestamp <timestamp>]
-Restore your PATH from a previous backup. If no timestamp is provided, the most recent backup is used.
+.BR restore " [" \-\-timestamp " <timestamp>]"
+Restore your PATH from a previous backup. If no timestamp is provided, restores from the most recent backup.
+
+.TP
+.BR flush ", " \-f
+Remove all non-existing directories from your PATH automatically.
+
+.TP
+.BR check ", " \-c
+Validate current PATH entries, identifying invalid or missing directories.
 
 .SH OPTIONS
 .TP
-.B \-\-help
-Display help information about \fIpathfinder\fR.
+.BR \-\-help
+Display help information about pathfinder and its commands.
 
 .TP
-.B \-\-version
+.BR \-\-version
 Display version information.
 
 .SH EXAMPLES
-.TP
-Add a directory to your PATH:
+.SS Adding Directories
+Add a single directory:
+.PP
+.nf
+.RS
+pathfinder add ~/bin
+.RE
+.fi
 
-# pathfinder add ~/my/custom/bin
+Add multiple directories:
+.PP
+.nf
+.RS
+pathfinder add ~/bin ~/scripts /usr/local/bin
+.RE
+.fi
 
-.TP
-Remove a directory from your PATH:
+.SS Removing Directories
+Remove a directory:
+.PP
+.nf
+.RS
+pathfinder delete ~/old/bin
+.RE
+.fi
 
-# pathfinder remove ~/my/old/bin
+Remove multiple directories:
+.PP
+.nf
+.RS
+pathfinder delete ~/old/bin ~/deprecated/scripts
+.RE
+.fi
 
-.TP
-List current PATH entries:
+.SS Listing PATH Entries
+View current PATH:
+.PP
+.nf
+.RS
+pathfinder list
+.RE
+.fi
 
-# pathfinder list
+.SS Managing Backups
+View backup history:
+.PP
+.nf
+.RS
+pathfinder history
+.RE
+.fi
 
-.TP
-Show backup history:
+Restore from specific backup:
+.PP
+.nf
+.RS
+pathfinder restore --timestamp 20240421120000
+.RE
+.fi
 
-# pathfinder history
+Restore from most recent backup:
+.PP
+.nf
+.RS
+pathfinder restore
+.RE
+.fi
 
-.TP
-Restore PATH from a specific backup:
+.SS Maintaining PATH
+Remove invalid paths:
+.PP
+.nf
+.RS
+pathfinder flush
+.RE
+.fi
 
-# pathfinder restore \-\-timestamp 20231007_120000
-
-.TP
-Restore PATH from the most recent backup:
-
-# pathfinder restore
+Check for invalid directories:
+.PP
+.nf
+.RS
+pathfinder check
+.RE
+.fi
 
 .SH FILES
 .TP
@@ -77,31 +144,86 @@ Restore PATH from the most recent backup:
 Directory where PATH backups are stored as JSON files.
 
 .TP
-.I ~/.bashrc, ~/.zshrc, ~/.profile
-Shell configuration files that may be modified by \fIpathfinder\fR to make PATH changes persistent.
+.I ~/.bashrc
+Bash shell configuration file that may be modified.
+
+.TP
+.I ~/.zshrc
+Zsh shell configuration file that may be modified.
+
+.TP
+.I ~/.profile
+Generic shell profile that may be modified if no specific shell is detected.
 
 .SH ENVIRONMENT
 .TP
+.B PATH
+The environment variable being managed.
+
+.TP
 .B SHELL
-Determines the user's shell, which is used to identify the appropriate configuration file to update.
+Used to identify the appropriate configuration file to update.
+
+.TP
+.B HOME
+Used for expanding tildes (~) in paths and locating configuration files.
+
+.SH BACKUP FORMAT
+Backups are stored as JSON files with the following structure:
+.PP
+.nf
+.RS
+{
+  "timestamp": "20240421120000",
+  "path": "/usr/local/bin:/usr/bin:/bin:~/custom/bin"
+}
+.RE
+.fi
+
+.SH EXIT STATUS
+.TP
+.B 0
+Success
+
+.TP
+.B 1
+General error (e.g., invalid directory, permission denied)
 
 .SH DIAGNOSTICS
-Exit status is 0 on success, non-zero on failure.
+pathfinder provides clear error messages for common issues:
+.TP
+- Invalid directory warnings
+.TP
+- Permission denied errors
+.TP
+- Missing backup files
+.TP
+- Shell configuration update failures
 
-.SH SEE ALSO
-bash(1), zsh(1), env(1)
+.SH BUGS
+Report bugs to: https://github.com/jwliles/pathfinder/issues
 
 .SH AUTHOR
-Your Name
+Justin Wayne Liles
 
-.SH LICENSE
-This software is released under the MIT License.
+.SH COPYRIGHT
+Copyright (c) 2024 Justin Wayne Liles.
+This is free software: you are free to change and redistribute it under the MIT License.
 
----
+.SH SEE ALSO
+.BR bash (1),
+.BR zsh (1),
+.BR env (1),
+.BR path (7)
 
-**Note:** To install the man page, copy it to your man directory and update the man database:
-
-```bash
-sudo cp pathfinder.1 /usr/local/share/man/man1/
-sudo mandb
-```
+.SH NOTES
+.PP
+- Backups are created automatically before any PATH modification
+.PP
+- Shell configuration files are updated to make changes persistent
+.PP
+- Tilde (~) is automatically expanded to the user's home directory
+.PP
+- Directories are validated before being added to PATH
+.PP
+- PATH entries are kept unique (no duplicates)
