@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand};
+use commands::validator;
 
 mod backup;
 mod commands;
@@ -43,6 +44,9 @@ enum Commands {
     /// Flush non-existing paths from the PATH
     #[command(name = "flush", short_flag = 'f')]
     Flush,
+    /// Check PATH for invalid directories
+    #[command(name = "check", short_flag = 'c')]
+    Check,
 }
 
 fn main() {
@@ -55,5 +59,18 @@ fn main() {
         Commands::History => backup::show_history(),
         Commands::Restore { timestamp } => commands::restore::execute(timestamp),
         Commands::Flush => commands::flush::execute(),
+        Commands::Check => match validator::validate_path() {
+            Ok(validation) => {
+                if validation.existing_dirs.is_empty() && validation.missing_dirs.is_empty() {
+                    println!("All directories in PATH are valid");
+                } else {
+                    println!("Invalid directories in PATH:");
+                    for dir in validation.missing_dirs {
+                        println!("  {}", dir.to_string_lossy());
+                    }
+                }
+            }
+            Err(e) => eprintln!("Error: {}", e),
+        },
     }
 }

@@ -3,3 +3,4 @@ pub mod delete;
 pub mod flush;
 pub mod list;
 pub mod restore;
+pub mod validator;
