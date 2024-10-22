@@ -61,7 +61,7 @@ Managing the `PATH` variable is crucial for system performance and command execu
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/pathfinder.git
+   git clone https://github.com/jwliles/pathfinder.git
    cd pathfinder
    ```
 
