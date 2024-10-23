@@ -1,8 +1,15 @@
 [package]
-name = "pathfinder"
+name = "pathmaster"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
+author = "Justin Wayne Liles"
+description = "pathmaster is a powerful command-line tool written in Rust for managing your system's PATH environment variable."
+repository = "https://github.com/jwliles/pathmaster"
+readme = "README.md"
+keywords = ["path", "environment", "configuration", "backup", "restore"]
+categories = ["cli", "system", "shell"]
+
 
 [dependencies]
 dirs-next = "2.0.0"
