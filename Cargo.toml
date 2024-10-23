@@ -3,12 +3,11 @@ name = "pathmaster"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-author = "Justin Wayne Liles"
+authors = ["Justin Wayne Liles"]
 description = "pathmaster is a powerful command-line tool written in Rust for managing your system's PATH environment variable."
 repository = "https://github.com/jwliles/pathmaster"
 readme = "README.md"
 keywords = ["path", "environment", "configuration", "backup", "restore"]
-categories = ["cli", "system", "shell"]
 
 
 [dependencies]
@@ -21,3 +20,4 @@ shellexpand = "2.1.0"
 
 [dev-dependencies]
 tempfile = "3.2.0"
+serial_test = "0.5.0"

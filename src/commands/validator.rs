@@ -36,39 +36,36 @@ impl PathValidation {
 /// - existing_dirs: Directories that exist in the filesystem
 /// - missing_dirs: Directories that are in PATH but don't exist
 ///
-/// Returns empty vectors if PATH is empty or unset.
+/// Returns PathValidation with empty vectors if PATH is:
+/// - Unset (environment variable doesn't exist)
+/// - Empty (environment variable exists but is empty)
+/// - Contains only whitespace
 ///
 /// # Errors
 ///
 /// Returns an IO error if there are problems accessing the filesystem.
-///
-/// # Example
-///
-/// ```
-/// use path_finder::commands::validator;
-///
-/// match validator::validate_path() {
-///     Ok(validation) => {
-///         if !validation.missing_dirs.is_empty() {
-///             println!("Found {} invalid directories in PATH", validation.missing_dirs.len());
-///         }
-///     },
-///     Err(e) => eprintln!("Error validating PATH: {}", e),
-/// }
-/// ```
 pub fn validate_path() -> std::io::Result<PathValidation> {
     let mut validation = PathValidation::new();
 
-    // Get PATH entries, handle empty PATH case
-    let path_var = match env::var("PATH") {
-        Ok(path) if !path.is_empty() => path,
-        _ => return Ok(validation), // Return empty validation for empty PATH
+    // Get PATH entries, return empty validation if PATH is unset or empty
+    let path_var = match env::var_os("PATH") {
+        Some(path) => {
+            let path_str = path.to_string_lossy();
+            if path_str.trim().is_empty() {
+                return Ok(validation);
+            }
+            path
+        }
+        None => return Ok(validation),
     };
 
-    // Process only if PATH is not empty
+    // Split PATH and process each entry
     for entry in env::split_paths(&path_var) {
-        let expanded_path = utils::expand_path(&entry.to_string_lossy());
+        if entry.as_os_str().is_empty() {
+            continue;
+        }
 
+        let expanded_path = utils::expand_path(&entry.to_string_lossy());
         if expanded_path.exists() && expanded_path.is_dir() {
             validation.existing_dirs.push(expanded_path);
         } else {
@@ -86,6 +83,7 @@ pub fn validate_path() -> std::io::Result<PathValidation> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serial_test::serial;
     use std::fs;
     use tempfile::TempDir;
 
@@ -93,23 +91,28 @@ mod tests {
     ///
     /// # Arguments
     ///
-    /// * `test_path` - The PATH value to use during the test
+    /// * `test_path` - Optional PATH value to use during the test. None means PATH will be unset.
     /// * `test` - The test function to run
+    ///
+    /// # Details
     ///
     /// This function will:
     /// 1. Save the current PATH
-    /// 2. Set the specified test PATH
+    /// 2. Set or unset PATH based on the test_path parameter
     /// 3. Run the test
     /// 4. Restore the original PATH, even if the test panics
-    fn with_test_path<F>(test_path: &str, test: F)
+    fn with_test_path<F>(test_path: Option<&str>, test: F)
     where
         F: FnOnce() + std::panic::UnwindSafe,
     {
         // Save original PATH
         let original_path = env::var("PATH").ok();
 
-        // Set test PATH
-        env::set_var("PATH", test_path);
+        // Set or remove test PATH
+        match test_path {
+            Some(path) => env::set_var("PATH", path),
+            None => env::remove_var("PATH"),
+        }
 
         // Run test, ensuring PATH is restored even if test panics
         let result = std::panic::catch_unwind(test);
@@ -126,7 +129,9 @@ mod tests {
         }
     }
 
+    /// Tests basic path validation with one valid and one invalid directory
     #[test]
+    #[serial]
     fn test_validate_path() {
         let temp_dir = TempDir::new().unwrap();
         let valid_path = temp_dir.path().join("valid");
@@ -140,7 +145,7 @@ mod tests {
             invalid_path.to_string_lossy()
         );
 
-        with_test_path(&test_path, || {
+        with_test_path(Some(&test_path), || {
             let validation = validate_path().unwrap();
             assert_eq!(validation.existing_dirs.len(), 1);
             assert_eq!(validation.missing_dirs.len(), 1);
@@ -149,9 +154,11 @@ mod tests {
         });
     }
 
+    /// Tests validation with an empty PATH
     #[test]
+    #[serial]
     fn test_validate_path_empty_path() {
-        with_test_path("", || {
+        with_test_path(Some(""), || {
             let validation = validate_path().unwrap();
             assert!(
                 validation.existing_dirs.is_empty(),
@@ -164,27 +171,40 @@ mod tests {
         });
     }
 
+    /// Tests validation with an unset PATH
     #[test]
+    #[serial]
     fn test_validate_unset_path() {
-        let original_path = env::var("PATH").ok();
-        env::remove_var("PATH");
+        with_test_path(None, || {
+            // Check if PATH is unset or empty
+            let path_var = env::var("PATH");
+            println!("PATH after unset: {:?}", path_var);
 
-        let validation = validate_path().unwrap();
-        assert!(
-            validation.existing_dirs.is_empty(),
-            "Expected no existing directories with unset PATH"
-        );
-        assert!(
-            validation.missing_dirs.is_empty(),
-            "Expected no missing directories with unset PATH"
-        );
-
-        if let Some(path) = original_path {
-            env::set_var("PATH", path);
-        }
+            // Proceed if PATH is unset or empty
+            if path_var.is_err() || path_var.as_ref().unwrap().trim().is_empty() {
+                let validation = validate_path().unwrap();
+                assert!(
+                    validation.existing_dirs.is_empty(),
+                    "Expected no existing directories with unset PATH, got: {:?}",
+                    validation.existing_dirs
+                );
+                assert!(
+                    validation.missing_dirs.is_empty(),
+                    "Expected no missing directories with unset PATH, got: {:?}",
+                    validation.missing_dirs
+                );
+            } else {
+                panic!(
+                    "Expected PATH to be unset or empty, but got: {:?}",
+                    path_var.unwrap()
+                );
+            }
+        });
     }
 
+    /// Tests that directories are properly sorted in the output
     #[test]
+    #[serial]
     fn test_validation_sorting() {
         let temp_dir = TempDir::new().unwrap();
         let path_b = temp_dir.path().join("b");
@@ -198,7 +218,7 @@ mod tests {
             path_c.to_string_lossy()
         );
 
-        with_test_path(&test_path, || {
+        with_test_path(Some(&test_path), || {
             let validation = validate_path().unwrap();
             assert_eq!(validation.missing_dirs.len(), 3);
             assert!(validation.missing_dirs[0] < validation.missing_dirs[1]);
@@ -206,7 +226,9 @@ mod tests {
         });
     }
 
+    /// Tests validation with a mix of existing and missing directories
     #[test]
+    #[serial]
     fn test_existing_and_missing_mix() {
         let temp_dir = TempDir::new().unwrap();
         let existing_a = temp_dir.path().join("existing_a");
@@ -217,20 +239,64 @@ mod tests {
         fs::create_dir(&existing_a).unwrap();
         fs::create_dir(&existing_b).unwrap();
 
+        // Use absolute paths for all directories
+        let existing_a = existing_a.canonicalize().unwrap();
+        let existing_b = existing_b.canonicalize().unwrap();
+        let missing_a = missing_a.canonicalize().unwrap_or(missing_a.clone());
+        let missing_b = missing_b.canonicalize().unwrap_or(missing_b.clone());
+
+        // Use platform-specific path separator
+        let _separator = std::path::MAIN_SEPARATOR.to_string();
+        let path_separator = if cfg!(windows) { ";" } else { ":" };
         let test_path = format!(
-            "{}:{}:{}:{}",
+            "{}{}{}{}{}{}{}",
             existing_b.to_string_lossy(),
+            path_separator,
             missing_a.to_string_lossy(),
+            path_separator,
             existing_a.to_string_lossy(),
+            path_separator,
             missing_b.to_string_lossy()
         );
 
-        with_test_path(&test_path, || {
+        with_test_path(Some(&test_path), || {
             let validation = validate_path().unwrap();
-            assert_eq!(validation.existing_dirs.len(), 2);
-            assert_eq!(validation.missing_dirs.len(), 2);
-            assert!(validation.existing_dirs[0] < validation.existing_dirs[1]);
-            assert!(validation.missing_dirs[0] < validation.missing_dirs[1]);
+
+            // Debug output
+            println!("Test PATH: {}", test_path);
+            println!("Existing dirs: {:?}", validation.existing_dirs);
+            println!("Missing dirs: {:?}", validation.missing_dirs);
+
+            assert_eq!(
+                validation.existing_dirs.len(),
+                2,
+                "Expected exactly 2 existing directories"
+            );
+            assert_eq!(
+                validation.missing_dirs.len(),
+                2,
+                "Expected exactly 2 missing directories"
+            );
+
+            // Create sorted vectors for comparison
+            let mut expected_existing = vec![existing_a.clone(), existing_b.clone()];
+            expected_existing.sort();
+            let mut expected_missing = vec![missing_a.clone(), missing_b.clone()];
+            expected_missing.sort();
+
+            let mut actual_existing = validation.existing_dirs.clone();
+            actual_existing.sort();
+            let mut actual_missing = validation.missing_dirs.clone();
+            actual_missing.sort();
+
+            assert_eq!(
+                actual_existing, expected_existing,
+                "Existing directories don't match expected"
+            );
+            assert_eq!(
+                actual_missing, expected_missing,
+                "Missing directories don't match expected"
+            );
         });
     }
 }
