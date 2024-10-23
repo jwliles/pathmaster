@@ -97,7 +97,7 @@ pub fn update_shell_config(entries: &[PathBuf]) -> std::io::Result<()> {
 
     let new_path = env::join_paths(entries).unwrap();
     let export_command = format!(
-        "\n# Updated PATH by pathfinder\nexport PATH=\"{}\"\n",
+        "\n# Updated PATH by pathmaster\nexport PATH=\"{}\"\n",
         new_path.to_string_lossy()
     );
 

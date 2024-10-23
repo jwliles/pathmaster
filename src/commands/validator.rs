@@ -1,4 +1,4 @@
-//! Path validation functionality for the pathfinder tool.
+//! Path validation functionality for the pathmaster tool.
 //!
 //! This module provides functionality to validate directories in the PATH
 //! environment variable, separating them into existing and missing directories.

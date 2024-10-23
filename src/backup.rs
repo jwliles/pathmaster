@@ -79,5 +79,5 @@ pub fn show_history() {
 /// Returns a PathBuf pointing to the backup directory
 pub fn get_backup_dir() -> PathBuf {
     let home_dir = dirs_next::home_dir().unwrap_or_else(|| PathBuf::from("/"));
-    home_dir.join(".pathfinder_backups")
+    home_dir.join(".pathmaster_backups")
 }

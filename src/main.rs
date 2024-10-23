@@ -1,4 +1,4 @@
-//! Pathfinder - A powerful tool for managing your system's PATH environment variable.
+//! Pathmaster - A powerful tool for managing your system's PATH environment variable.
 //!
 //! This binary provides a command-line interface for:
 //! - Adding directories to PATH
@@ -15,9 +15,9 @@ mod backup;
 mod commands;
 mod utils;
 
-/// CLI configuration and argument parsing for pathfinder
+/// CLI configuration and argument parsing for pathmaster
 #[derive(Parser)]
-#[command(name = "pathfinder")]
+#[command(name = "pathmaster")]
 #[command(version = "0.1.0")]
 #[command(about = "A powerful path management tool", long_about = None)]
 struct Cli {
@@ -25,7 +25,7 @@ struct Cli {
     command: Commands,
 }
 
-/// Available commands for pathfinder
+/// Available commands for pathmaster
 #[derive(Subcommand)]
 enum Commands {
     /// Add directories to the PATH

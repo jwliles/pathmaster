@@ -1,11 +1,11 @@
 # **README**
 
-# pathfinder
+# pathmaster
 
 ## **Table of Contents**
 
 - [**README**](#readme)
-- [pathfinder](#pathfinder)
+- [pathmaster](#pathmaster)
   - [**Table of Contents**](#table-of-contents)
   - [**Introduction**](#introduction)
   - [**Features**](#features)
@@ -28,9 +28,9 @@
 
 ## **Introduction**
 
-**pathfinder** is a powerful command-line tool written in Rust for managing your system's `PATH` environment variable. It simplifies the process of adding and removing directories from your `PATH`, ensures backups are created automatically, and provides tools to restore previous configurations.
+**pathmaster** is a powerful command-line tool written in Rust for managing your system's `PATH` environment variable. It simplifies the process of adding and removing directories from your `PATH`, ensures backups are created automatically, and provides tools to restore previous configurations.
 
-Managing the `PATH` variable is crucial for system performance and command execution. `pathfinder` provides a safe and efficient way to handle `PATH` modifications, with features designed to prevent errors and maintain system stability.
+Managing the `PATH` variable is crucial for system performance and command execution. `pathmaster` provides a safe and efficient way to handle `PATH` modifications, with features designed to prevent errors and maintain system stability.
 
 ## **Features**
 
@@ -47,7 +47,7 @@ Managing the `PATH` variable is crucial for system performance and command execu
 ### **Prerequisites**
 
 - **Rust Toolchain**: Ensure you have Rust installed. You can install Rust using [rustup](https://www.rust-lang.org/tools/install):
-  
+
   ```bash
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
   ```
@@ -55,30 +55,30 @@ Managing the `PATH` variable is crucial for system performance and command execu
 ### **Building from Source**
 
 1. **Clone the Repository**
-   
+
    ```bash
-   git clone https://github.com/jwliles/pathfinder.git
-   cd pathfinder
+   git clone https://github.com/jwliles/pathmaster.git
+   cd pathmaster
    ```
 
 2. **Build the Project**
-   
+
    ```bash
    cargo build --release
    ```
-   
+
    This command compiles the project in release mode, producing an optimized binary.
 
 3. **Install the Binary**
-   
+
    Optionally, you can install the binary system-wide:
-   
+
    ```bash
-   sudo cp target/release/pathfinder /usr/local/bin/
+   sudo cp target/release/pathmaster /usr/local/bin/
    ```
-   
+
    Or add it to your `PATH`:
-   
+
    ```bash
    export PATH="$PATH:$(pwd)/target/release"
    ```
@@ -88,7 +88,7 @@ Managing the `PATH` variable is crucial for system performance and command execu
 ### **Command Overview**
 
 ```bash
-pathfinder [COMMAND] [OPTIONS]
+pathmaster [COMMAND] [OPTIONS]
 ```
 
 ### **Commands**
@@ -100,7 +100,7 @@ Add a directory to your `PATH`.
 **Usage:**
 
 ```bash
-pathfinder add <directory>
+pathmaster add <directory>
 ```
 
 **Options:**
@@ -114,7 +114,7 @@ Remove a directory from your `PATH`.
 **Usage:**
 
 ```bash
-pathfinder remove <directory>
+pathmaster remove <directory>
 ```
 
 **Options:**
@@ -128,7 +128,7 @@ List all current entries in your `PATH`.
 **Usage:**
 
 ```bash
-pathfinder list
+pathmaster list
 ```
 
 #### **history**
@@ -138,7 +138,7 @@ Show the backup history of your `PATH`.
 **Usage:**
 
 ```bash
-pathfinder history
+pathmaster history
 ```
 
 #### **restore**
@@ -148,7 +148,7 @@ Restore your `PATH` from a previous backup.
 **Usage:**
 
 ```bash
-pathfinder restore [--timestamp <timestamp>]
+pathmaster restore [--timestamp <timestamp>]
 ```
 
 **Options:**
@@ -158,25 +158,25 @@ pathfinder restore [--timestamp <timestamp>]
 ### **Examples**
 
 - **Add a Directory to PATH**
-  
+
   ```bash
-  pathfinder add ~/my/custom/bin
+  pathmaster add ~/my/custom/bin
   ```
 
 - **Remove a Directory from PATH**
-  
+
   ```bash
-  pathfinder remove ~/my/old/bin
+  pathmaster remove ~/my/old/bin
   ```
 
 - **List PATH Entries**
-  
+
   ```bash
-  pathfinder list
+  pathmaster list
   ```
-  
+
   **Sample Output:**
-  
+
   ```
   Current PATH entries:
   - /usr/local/bin
@@ -189,13 +189,13 @@ pathfinder restore [--timestamp <timestamp>]
   ```
 
 - **Show Backup History**
-  
+
   ```bash
-  pathfinder history
+  pathmaster history
   ```
-  
+
   **Sample Output:**
-  
+
   ```
   Available backups:
   - backup_20231007_120000.json
@@ -203,30 +203,30 @@ pathfinder restore [--timestamp <timestamp>]
   ```
 
 - **Restore PATH from a Specific Backup**
-  
+
   ```bash
-  pathfinder restore --timestamp 20231007_120000
+  pathmaster restore --timestamp 20231007_120000
   ```
 
 - **Restore PATH from the Most Recent Backup**
-  
+
   ```bash
-  pathfinder restore
+  pathmaster restore
   ```
 
 ## **Configuration**
 
-`pathfinder` modifies your shell configuration file to make changes to `PATH` persistent across sessions.
+`pathmaster` modifies your shell configuration file to make changes to `PATH` persistent across sessions.
 
 - **Supported Shells**: Bash (`.bashrc`), Zsh (`.zshrc`), or a generic `.profile` if the shell is not recognized.
-- **Backup Directory**: Backups are stored in `~/.pathfinder_backups`.
+- **Backup Directory**: Backups are stored in `~/.pathmaster_backups`.
 
-**Note**: Always review changes made to your shell configuration files. `pathfinder` adds an export command to update your `PATH`.
+**Note**: Always review changes made to your shell configuration files. `pathmaster` adds an export command to update your `PATH`.
 
 ## **Backup Management**
 
-- **Automatic Backups**: Before any modification, `pathfinder` creates a backup of your current `PATH` with a timestamp.
-- **Backup Files**: Stored as JSON files in `~/.pathfinder_backups`.
+- **Automatic Backups**: Before any modification, `pathmaster` creates a backup of your current `PATH` with a timestamp.
+- **Backup Files**: Stored as JSON files in `~/.pathmaster_backups`.
 - **Restoration**: Use the `restore` command to revert to a previous `PATH` configuration.
 
 **Backup File Format Example (`backup_20231008_090000.json`):**
@@ -245,19 +245,19 @@ Contributions are welcome! Please follow these steps:
 1. **Fork the Repository**
 
 2. **Create a Feature Branch**
-   
+
    ```bash
    git checkout -b feature/your-feature
    ```
 
 3. **Commit Your Changes**
-   
+
    ```bash
    git commit -am 'Add your feature'
    ```
 
 4. **Push to the Branch**
-   
+
    ```bash
    git push origin feature/your-feature
    ```

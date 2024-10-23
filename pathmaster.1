@@ -1,15 +1,15 @@
-.TH PATHFINDER 1 "April 2024" "Version 1.0" "User Commands"
+.TH PATHMASTER 1 "April 2024" "Version 1.0" "User Commands"
 
 .SH NAME
-pathfinder \- A powerful tool for managing your system's PATH environment variable
+pathmaster \- A powerful tool for managing your system's PATH environment variable
 
 .SH SYNOPSIS
-.B pathfinder
+.B pathmaster
 .IR COMMAND
 [OPTIONS] [ARGUMENTS]
 
 .SH DESCRIPTION
-.B pathfinder
+.B pathmaster
 is a comprehensive tool for managing your system's PATH environment variable. It provides functionality for adding and removing directories, validating PATH entries, managing backups, and maintaining PATH integrity.
 
 .SH COMMANDS
@@ -46,7 +46,7 @@ Validate current PATH entries, identifying invalid or missing directories.
 .SH OPTIONS
 .TP
 .BR \-\-help
-Display help information about pathfinder and its commands.
+Display help information about pathmaster and its commands.
 
 .TP
 .BR \-\-version
@@ -58,7 +58,7 @@ Add a single directory:
 .PP
 .nf
 .RS
-pathfinder add ~/bin
+pathmaster add ~/bin
 .RE
 .fi
 
@@ -66,7 +66,7 @@ Add multiple directories:
 .PP
 .nf
 .RS
-pathfinder add ~/bin ~/scripts /usr/local/bin
+pathmaster add ~/bin ~/scripts /usr/local/bin
 .RE
 .fi
 
@@ -75,7 +75,7 @@ Remove a directory:
 .PP
 .nf
 .RS
-pathfinder delete ~/old/bin
+pathmaster delete ~/old/bin
 .RE
 .fi
 
@@ -83,7 +83,7 @@ Remove multiple directories:
 .PP
 .nf
 .RS
-pathfinder delete ~/old/bin ~/deprecated/scripts
+pathmaster delete ~/old/bin ~/deprecated/scripts
 .RE
 .fi
 
@@ -92,7 +92,7 @@ View current PATH:
 .PP
 .nf
 .RS
-pathfinder list
+pathmaster list
 .RE
 .fi
 
@@ -101,7 +101,7 @@ View backup history:
 .PP
 .nf
 .RS
-pathfinder history
+pathmaster history
 .RE
 .fi
 
@@ -109,7 +109,7 @@ Restore from specific backup:
 .PP
 .nf
 .RS
-pathfinder restore --timestamp 20240421120000
+pathmaster restore --timestamp 20240421120000
 .RE
 .fi
 
@@ -117,7 +117,7 @@ Restore from most recent backup:
 .PP
 .nf
 .RS
-pathfinder restore
+pathmaster restore
 .RE
 .fi
 
@@ -126,7 +126,7 @@ Remove invalid paths:
 .PP
 .nf
 .RS
-pathfinder flush
+pathmaster flush
 .RE
 .fi
 
@@ -134,13 +134,13 @@ Check for invalid directories:
 .PP
 .nf
 .RS
-pathfinder check
+pathmaster check
 .RE
 .fi
 
 .SH FILES
 .TP
-.I ~/.pathfinder_backups/
+.I ~/.pathmaster_backups/
 Directory where PATH backups are stored as JSON files.
 
 .TP
@@ -190,7 +190,7 @@ Success
 General error (e.g., invalid directory, permission denied)
 
 .SH DIAGNOSTICS
-pathfinder provides clear error messages for common issues:
+pathmaster provides clear error messages for common issues:
 .TP
 - Invalid directory warnings
 .TP
@@ -201,7 +201,7 @@ pathfinder provides clear error messages for common issues:
 - Shell configuration update failures
 
 .SH BUGS
-Report bugs to: https://github.com/jwliles/pathfinder/issues
+Report bugs to: https://github.com/jwliles/pathmaster/issues
 
 .SH AUTHOR
 Justin Wayne Liles
