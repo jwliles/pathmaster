@@ -1,4 +1,4 @@
-.TH PATHMASTER 1 "April 2024" "Version 1.0" "User Commands"
+.TH PATHMASTER 1 "October 2024" "Version 0.2.1" "User Commands"
 
 .SH NAME
 pathmaster \- A powerful tool for managing your system's PATH environment variable
@@ -37,7 +37,21 @@ Restore your PATH from a previous backup. If no timestamp is provided, restores 
 
 .TP
 .BR flush ", " \-f
-Remove all non-existing directories from your PATH automatically.
+Remove all non-existing directories from your PATH automatically. This command:
+.RS
+.IP \[bu] 2
+Creates a backup of current PATH before modification
+.IP \[bu]
+Creates a backup of shell configuration file
+.IP \[bu]
+Identifies and removes all invalid directory entries
+.IP \[bu]
+Updates both current session PATH and shell configuration
+.IP \[bu]
+Provides detailed feedback about removed paths
+.IP \[bu]
+Maintains a backup for recovery if needed
+.RE
 
 .TP
 .BR check ", " \-c
@@ -179,6 +193,14 @@ Backups are stored as JSON files with the following structure:
 }
 .RE
 .fi
+.PP
+Shell configuration backups are stored with .bak extension before modification:
+.PP
+.nf
+.RS
+~/.bashrc.bak or ~/.zshrc.bak or ~/.profile.bak
+.RE
+.fi
 
 .SH EXIT STATUS
 .TP
@@ -199,6 +221,18 @@ pathmaster provides clear error messages for common issues:
 - Missing backup files
 .TP
 - Shell configuration update failures
+.PP
+When using the flush command, pathmaster provides detailed feedback:
+.IP \[bu] 2
+Lists each invalid path as it's removed
+.IP \[bu]
+Reports the total number of paths removed
+.IP \[bu]
+Confirms shell configuration updates
+.IP \[bu]
+Indicates backup creation status
+.IP \[bu]
+Warns if changes are session-only due to configuration update failures
 
 .SH BUGS
 Report bugs to: https://github.com/jwliles/pathmaster/issues

@@ -18,11 +18,14 @@
       - [**add**](#add)
       - [**remove**](#remove)
       - [**list**](#list)
+      - [**check**](#check)
+      - [**flush**](#flush)
       - [**history**](#history)
       - [**restore**](#restore)
     - [**Examples**](#examples)
   - [**Configuration**](#configuration)
   - [**Backup Management**](#backup-management)
+    - [**Shell Configuration Backups**](#shell-configuration-backups)
   - [**Contributing**](#contributing)
   - [**License**](#license)
 
@@ -41,6 +44,10 @@ Managing the `PATH` variable is crucial for system performance and command execu
 - **Cross-Platform**: Compatible with Unix/Linux and macOS systems.
 - **Safe Modifications**: Validates directories before adding them to prevent errors.
 - **Persistent Changes**: Updates your shell configuration to make changes permanent.
+- **Enhanced Path Validation**: Robust detection and removal of invalid PATH entries
+- **Shell Configuration Safety**: Automatic backup of shell configuration files before modifications
+- **Detailed Feedback**: Clear reporting of all PATH modifications and their outcomes
+- **Session and Permanent Changes**: Updates both current session and shell configuration files
 
 ## **Installation**
 
@@ -129,6 +136,62 @@ List all current entries in your `PATH`.
 
 ```bash
 pathmaster list
+```
+
+#### **check**
+
+Validate current PATH entries and identify invalid or missing directories.
+
+**Usage:**
+
+```bash
+pathmaster check
+```
+
+**Example Output:**
+
+```bash
+Invalid directories in PATH:
+  /home/user/.config/emacs/bin
+  /home/user/old/scripts
+```
+
+#### **flush**
+
+The `flush` command provides a safe way to remove invalid directories from your PATH:
+
+**Usage:**
+
+```bash
+pathmaster flush
+# or
+pathmaster -f
+```
+
+**Process:**
+
+1. Creates a backup of current PATH
+2. Creates a backup of shell configuration file
+3. Identifies invalid directory entries
+4. Removes invalid entries from PATH
+5. Updates shell configuration for persistence
+6. Provides detailed feedback about changes
+
+**Safety Features:**
+
+- Automatic PATH backup creation
+- Shell configuration file backup
+- Detailed removal reporting
+- Recovery options via backup system
+- Session-only fallback if configuration update fails
+
+**Example Output:**
+
+```bash
+Created backup of shell config at: /home/user/.bashrc.bak
+Removing invalid path: /home/user/.config/emacs/bin
+Removing invalid path: /home/user/old/scripts
+Successfully removed 2 invalid path(s) and updated shell configuration.
 ```
 
 #### **history**
@@ -228,6 +291,16 @@ pathmaster restore [--timestamp <timestamp>]
 - **Automatic Backups**: Before any modification, `pathmaster` creates a backup of your current `PATH` with a timestamp.
 - **Backup Files**: Stored as JSON files in `~/.pathmaster_backups`.
 - **Restoration**: Use the `restore` command to revert to a previous `PATH` configuration.
+
+### **Shell Configuration Backups**
+
+Before modifying shell configuration files, pathmaster creates backup files:
+
+- Bash: `~/.bashrc.bak`
+- Zsh: `~/.zshrc.bak`
+- Generic: `~/.profile.bak`
+
+These backups allow for manual recovery if needed.
 
 **Backup File Format Example (`backup_20231008_090000.json`):**
 
