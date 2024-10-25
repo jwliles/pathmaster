@@ -1,28 +1,32 @@
-//! Command implementation for removing invalid paths from PATH.
+//! Path management functionality for removing invalid entries from PATH.
 //!
-//! This module handles:
-//! - Identifying non-existent directories in PATH
-//! - Creating backups before modification
-//! - Removing invalid entries
-//! - Updating shell configuration
+//! This module provides functionality to:
+//! - Identify and remove invalid PATH entries
+//! - Update shell configuration files
+//! - Maintain backups of configurations
+//! - Provide detailed feedback about changes
 
+// src/commands/flush.rs
 use crate::backup;
 use crate::utils;
+use std::path::PathBuf;
 
-/// Executes the flush command to remove non-existing paths from PATH
+/// Removes invalid directories from the PATH environment variable.
 ///
-/// This function will:
-/// 1. Create a backup of the current PATH
-/// 2. Check each directory in PATH for existence
-/// 3. Remove directories that don't exist
-/// 4. Update the PATH environment variable
-/// 5. Update shell configuration
+/// # Process
+/// 1. Creates a backup of current PATH
+/// 2. Identifies and removes invalid directory entries
+/// 3. Updates both the current session PATH and shell configuration
+///
+/// # Feedback
+/// - Logs each removed path
+/// - Reports success or failure of configuration updates
+/// - Indicates if changes are session-only due to config update failure
 ///
 /// # Example
-///
-/// ```
-/// commands::flush::execute();
-/// // This will remove all non-existing directories from PATH
+/// ```rust
+/// # use path_finder::commands::flush;
+/// flush::execute();
 /// ```
 pub fn execute() {
     // Backup current PATH
@@ -32,27 +36,44 @@ pub fn execute() {
     }
 
     // Get current PATH entries
-    let mut path_entries = utils::get_path_entries();
+    let current_entries = utils::get_path_entries();
+    let original_count = current_entries.len();
 
-    // Identify non-existing paths
-    let original_len = path_entries.len();
-    path_entries.retain(|p| p.exists());
+    // Filter out non-existing paths
+    let valid_entries: Vec<PathBuf> = current_entries
+        .into_iter()
+        .filter(|path| {
+            if utils::is_valid_path_entry(path) {
+                true
+            } else {
+                println!("Removing invalid path: {}", path.display());
+                false
+            }
+        })
+        .collect();
 
-    let removed_count = original_len - path_entries.len();
+    let removed_count = original_count - valid_entries.len();
 
     if removed_count == 0 {
-        println!("No invalid paths were found in your PATH.");
+        println!("No invalid paths found in PATH.");
         return;
     }
 
-    // Update PATH
-    utils::set_path_entries(&path_entries);
+    // Update PATH environment variable
+    utils::set_path_entries(&valid_entries);
 
-    // Update shell configuration
-    if let Err(e) = utils::update_shell_config(&path_entries) {
-        eprintln!("Error updating shell configuration: {}", e);
-        return;
+    // Update shell configuration files
+    match utils::update_shell_config(&valid_entries) {
+        Ok(_) => {
+            println!(
+                "Successfully removed {} invalid path(s) and updated shell configuration.",
+                removed_count
+            );
+        }
+        Err(e) => {
+            eprintln!("Error updating shell configuration: {}", e);
+            println!("Warning: PATH environment variable was updated for current session only.");
+            println!("To make changes permanent, you'll need to manually update your shell configuration.");
+        }
     }
-
-    println!("Removed {} invalid path(s) from your PATH.", removed_count);
 }
