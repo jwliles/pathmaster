@@ -8,21 +8,40 @@
 - [pathmaster](#pathmaster)
   - [**Table of Contents**](#table-of-contents)
   - [**Introduction**](#introduction)
-  - [**Features**](#features)
+- [pathmaster](#pathmaster-1)
+  - [New in Version 0.2.2](#new-in-version-022)
+  - [Features](#features)
+    - [Core Features (Updated in 0.2.2)](#core-features-updated-in-022)
+    - [Path Management](#path-management)
+    - [Safety Features](#safety-features)
+  - [Usage](#usage)
+    - [Checking PATH Sources](#checking-path-sources)
+    - [Flushing Invalid Paths](#flushing-invalid-paths)
+  - [Configuration Files](#configuration-files)
+  - [Documentation](#documentation)
+  - [Technical Details](#technical-details)
+  - [Upgrading](#upgrading)
+  - [Known Issues](#known-issues)
+  - [Coming in Future Releases](#coming-in-future-releases)
+  - [**Features**](#features-1)
   - [**Installation**](#installation)
     - [**Prerequisites**](#prerequisites)
     - [**Building from Source**](#building-from-source)
-  - [**Usage**](#usage)
+  - [**Usage**](#usage-1)
     - [**Command Overview**](#command-overview)
     - [**Commands**](#commands)
       - [**add**](#add)
       - [**remove**](#remove)
       - [**list**](#list)
+      - [**check**](#check)
+      - [**flush**](#flush)
       - [**history**](#history)
       - [**restore**](#restore)
     - [**Examples**](#examples)
   - [**Configuration**](#configuration)
   - [**Backup Management**](#backup-management)
+    - [**Backup Modes**](#backup-modes)
+    - [**Backup Storage**](#backup-storage)
   - [**Contributing**](#contributing)
   - [**License**](#license)
 
@@ -31,6 +50,114 @@
 **pathmaster** is a powerful command-line tool written in Rust for managing your system's `PATH` environment variable. It simplifies the process of adding and removing directories from your `PATH`, ensures backups are created automatically, and provides tools to restore previous configurations.
 
 Managing the `PATH` variable is crucial for system performance and command execution. `pathmaster` provides a safe and efficient way to handle `PATH` modifications, with features designed to prevent errors and maintain system stability.
+
+# pathmaster
+
+## New in Version 0.2.2
+
+- Enhanced PATH validation and scanning capabilities
+- Improved detection of PATH modifications across system
+- Accurate identification of PATH entry sources
+- Better handling of different shell configurations
+- Fixed issues with PATH entry detection and validation
+
+## Features
+
+### Core Features (Updated in 0.2.2)
+
+- **Enhanced PATH Scanning**: More accurate detection of PATH modifications
+- **Source Identification**: Identifies whether PATH modifications require sudo
+- **Improved Validation**: Better handling of different PATH modification formats
+- **Shell Support**: Enhanced detection of shell-specific configurations
+- **Framework Integration**: Better support for shell framework configurations
+- **Safety Features**: Automatic backups, configuration preservation, validation
+
+### Path Management
+
+- Add/remove directories from PATH
+- List current PATH entries
+- Validate PATH entries
+- Automatic backups
+- Configuration preservation
+- Detailed feedback
+
+### Safety Features
+
+- Automatic backups before modifications
+- Shell configuration preservation
+- Detailed user feedback
+- Recovery options
+
+## Usage
+
+### Checking PATH Sources
+
+```bash
+pathmaster check
+```
+
+Now provides enhanced output showing:
+
+- Invalid directories in PATH
+- Source of each PATH modification
+- Whether sudo is required for changes
+- Shell-specific configuration details
+
+### Flushing Invalid Paths
+
+```bash
+pathmaster flush
+```
+
+Improved in v0.2.2 with:
+
+- More accurate invalid path detection
+- Better feedback for removed paths
+- Enhanced shell configuration handling
+- Improved backup creation
+
+## Configuration Files
+
+pathmaster now better handles various configuration files:
+
+- Shell-specific files (.bashrc, .zshrc)
+- System-wide configurations (/etc/profile, etc.)
+- Shell framework configurations
+- Distribution-specific locations
+
+## Documentation
+
+Please see the man page (`man pathmaster`) for detailed information about all commands and features.
+
+## Technical Details
+
+For v0.2.2, significant improvements were made to:
+
+- PATH modification detection
+- Shell configuration handling
+- System vs user file differentiation
+- Framework integration
+- Error handling and reporting
+
+## Upgrading
+
+When upgrading to v0.2.2:
+
+1. Backup your current configuration
+2. Update using your package manager or cargo
+3. Review any system-wide PATH modifications
+4. Check shell framework compatibility
+
+## Known Issues
+
+None in current release.
+
+## Coming in Future Releases
+
+- Backup mode configuration (v0.2.3)
+- Additional shell framework support
+- Enhanced configuration options
+- Performance optimizations
 
 ## **Features**
 
@@ -41,6 +168,10 @@ Managing the `PATH` variable is crucial for system performance and command execu
 - **Cross-Platform**: Compatible with Unix/Linux and macOS systems.
 - **Safe Modifications**: Validates directories before adding them to prevent errors.
 - **Persistent Changes**: Updates your shell configuration to make changes permanent.
+- **Enhanced Path Validation**: Robust detection and removal of invalid PATH entries
+- **Shell Configuration Safety**: Automatic backup of shell configuration files before modifications
+- **Detailed Feedback**: Clear reporting of all PATH modifications and their outcomes
+- **Session and Permanent Changes**: Updates both current session and shell configuration files
 
 ## **Installation**
 
@@ -129,6 +260,62 @@ List all current entries in your `PATH`.
 
 ```bash
 pathmaster list
+```
+
+#### **check**
+
+Validate current PATH entries and identify invalid or missing directories.
+
+**Usage:**
+
+```bash
+pathmaster check
+```
+
+**Example Output:**
+
+```bash
+Invalid directories in PATH:
+  /home/user/.config/emacs/bin
+  /home/user/old/scripts
+```
+
+#### **flush**
+
+The `flush` command provides a safe way to remove invalid directories from your PATH:
+
+**Usage:**
+
+```bash
+pathmaster flush
+# or
+pathmaster -f
+```
+
+**Process:**
+
+1. Creates a backup of current PATH
+2. Creates a backup of shell configuration file
+3. Identifies invalid directory entries
+4. Removes invalid entries from PATH
+5. Updates shell configuration for persistence
+6. Provides detailed feedback about changes
+
+**Safety Features:**
+
+- Automatic PATH backup creation
+- Shell configuration file backup
+- Detailed removal reporting
+- Recovery options via backup system
+- Session-only fallback if configuration update fails
+
+**Example Output:**
+
+```bash
+Created backup of shell config at: /home/user/.bashrc.bak
+Removing invalid path: /home/user/.config/emacs/bin
+Removing invalid path: /home/user/old/scripts
+Successfully removed 2 invalid path(s) and updated shell configuration.
 ```
 
 #### **history**
@@ -225,18 +412,40 @@ pathmaster restore [--timestamp <timestamp>]
 
 ## **Backup Management**
 
-- **Automatic Backups**: Before any modification, `pathmaster` creates a backup of your current `PATH` with a timestamp.
-- **Backup Files**: Stored as JSON files in `~/.pathmaster_backups`.
-- **Restoration**: Use the `restore` command to revert to a previous `PATH` configuration.
+pathmaster provides flexible backup management with configurable backup modes:
 
-**Backup File Format Example (`backup_20231008_090000.json`):**
+### **Backup Modes**
 
-```json
-{
-  "timestamp": "20231008_090000",
-  "path": "/usr/local/bin:/usr/bin:/bin:~/my/custom/bin"
-}
+Use the `--backup-mode` flag to control what gets backed up:
+
+- `default`: Back up both PATH and shell configurations (default behavior)
+- `path`: Back up only PATH entries
+- `shell`: Back up only shell configuration
+- `switch`: Toggle between PATH-only and shell-only backups
+
+**Examples:**
+
+```bash
+# Only back up PATH when adding a directory
+pathmaster --backup-mode path add ~/bin
+
+# Only back up shell config when flushing invalid paths
+pathmaster --backup-mode shell flush
+
+# Reset to backing up both
+pathmaster --backup-mode default
+
+# Toggle between backup modes
+pathmaster --backup-mode switch
 ```
+
+### **Backup Storage**
+
+- **PATH Backups**: Stored as JSON files in `~/.pathmaster_backups`
+- **Shell Configuration Backups**: Created as `.bak` files alongside your shell config:
+  - Bash: `~/.bashrc.bak`
+  - Zsh: `~/.zshrc.bak`
+  - Generic: `~/.profile.bak`
 
 ## **Contributing**
 

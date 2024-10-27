@@ -1,16 +1,28 @@
-.TH PATHMASTER 1 "April 2024" "Version 1.0" "User Commands"
+.TH PATHMASTER 1 "October 2024" "Version 0.2.2" "User Commands"
 
 .SH NAME
 pathmaster \- A powerful tool for managing your system's PATH environment variable
 
 .SH SYNOPSIS
 .B pathmaster
+[OPTIONS]
 .IR COMMAND
-[OPTIONS] [ARGUMENTS]
+[ARGUMENTS]
 
 .SH DESCRIPTION
 .B pathmaster
 is a comprehensive tool for managing your system's PATH environment variable. It provides functionality for adding and removing directories, validating PATH entries, managing backups, and maintaining PATH integrity.
+.B New in version 0.2.2:
+.RS
+.IP [bu] 2
+Enhanced PATH validation and scanning
+.IP [bu]
+Improved detection of PATH modifications
+.IP [bu]
+Better source identification for PATH entries
+.IP [bu]
+Enhanced shell configuration handling
+.RE
 
 .SH COMMANDS
 .TP
@@ -37,11 +49,51 @@ Restore your PATH from a previous backup. If no timestamp is provided, restores 
 
 .TP
 .BR flush ", " \-f
-Remove all non-existing directories from your PATH automatically.
+Remove all non-existing directories from your PATH automatically. This command:
+.RS
+.IP \[bu] 2
+Creates a backup of current PATH before modification
+.IP \[bu]
+Creates a backup of shell configuration file
+.IP \[bu]
+Identifies and removes all invalid directory entries
+.IP \[bu]
+Updates both current session PATH and shell configuration
+.IP \[bu]
+Provides detailed feedback about removed paths
+.IP \[bu]
+Maintains a backup for recovery if needed
+.RE
 
 .TP
 .BR check ", " \-c
 Validate current PATH entries, identifying invalid or missing directories.
+.TP
+.BR check ", " -c
+Validate current PATH entries, identifying invalid or missing directories. Version 0.2.2 adds:
+.RS
+.IP [bu] 2
+Source identification for PATH entries
+.IP [bu]
+Sudo requirement detection
+.IP [bu]
+Shell-specific configuration details
+.IP [bu]
+Framework compatibility information
+.RE
+.TP
+.BR flush ", " -f
+Remove all non-existing directories from your PATH automatically. Enhanced in 0.2.2 with:
+.RS
+.IP [bu] 2
+Improved invalid path detection
+.IP [bu]
+Better modification source tracking
+.IP [bu]
+Enhanced shell configuration handling
+.IP [bu]
+More detailed feedback
+.RE
 
 .SH OPTIONS
 .TP
@@ -51,6 +103,35 @@ Display help information about pathmaster and its commands.
 .TP
 .BR \-\-version
 Display version information.
+
+.TP
+.BR \-\-backup-mode " {default|path|shell|switch}"
+Control what gets backed up when modifying PATH:
+.RS
+.IP \[bu] 2
+default: Back up both PATH and shell configuration (default behavior)
+.IP \[bu]
+path: Back up only PATH entries
+.IP \[bu]
+shell: Back up only shell configuration
+.IP \[bu]
+switch: Toggle between PATH-only and shell-only backups
+.RE
+
+.SH VERSION FEATURES
+.SS Version 0.2.2
+.RS
+.IP [bu] 2
+Enhanced PATH validation and scanning capabilities
+.IP [bu]
+Improved detection of PATH modifications
+.IP [bu]
+Better source identification for PATH entries
+.IP [bu]
+Enhanced shell configuration handling
+.IP [bu]
+Fixed PATH entry detection issues
+.RE
 
 .SH EXAMPLES
 .SS Adding Directories
@@ -87,21 +168,23 @@ pathmaster delete ~/old/bin ~/deprecated/scripts
 .RE
 .fi
 
-.SS Listing PATH Entries
-View current PATH:
-.PP
-.nf
-.RS
-pathmaster list
-.RE
-.fi
-
 .SS Managing Backups
 View backup history:
 .PP
 .nf
 .RS
 pathmaster history
+.RE
+.fi
+
+Configure backup behavior:
+.PP
+.nf
+.RS
+pathmaster --backup-mode path add ~/bin     # Only back up PATH
+pathmaster --backup-mode shell flush        # Only back up shell config
+pathmaster --backup-mode default            # Reset to backing up both
+pathmaster --backup-mode switch             # Toggle between modes
 .RE
 .fi
 
@@ -179,6 +262,14 @@ Backups are stored as JSON files with the following structure:
 }
 .RE
 .fi
+.PP
+Shell configuration backups are stored with .bak extension before modification:
+.PP
+.nf
+.RS
+~/.bashrc.bak or ~/.zshrc.bak or ~/.profile.bak
+.RE
+.fi
 
 .SH EXIT STATUS
 .TP
@@ -199,6 +290,18 @@ pathmaster provides clear error messages for common issues:
 - Missing backup files
 .TP
 - Shell configuration update failures
+.PP
+When using the flush command, pathmaster provides detailed feedback:
+.IP \[bu] 2
+Lists each invalid path as it's removed
+.IP \[bu]
+Reports the total number of paths removed
+.IP \[bu]
+Confirms shell configuration updates
+.IP \[bu]
+Indicates backup creation status
+.IP \[bu]
+Warns if changes are session-only due to configuration update failures
 
 .SH BUGS
 Report bugs to: https://github.com/jwliles/pathmaster/issues

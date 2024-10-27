@@ -1,0 +1,30 @@
+.
+├── Cargo.lock
+├── Cargo.toml
+├── LICENSE
+├── pathmaster.1
+├── README.md
+├── src
+│   ├── backup
+│   │   ├── core.rs
+│   │   ├── create.rs
+│   │   ├── mode.rs
+│   │   ├── mod.rs
+│   │   ├── restore.rs
+│   │   └── show.rs
+│   ├── commands
+│   │   ├── add.rs
+│   │   ├── check.rs
+│   │   ├── delete.rs
+│   │   ├── flush.rs
+│   │   ├── list.rs
+│   │   ├── mod.rs
+│   │   └── validator.rs
+│   ├── error.rs
+│   ├── main.rs
+│   └── utils
+│       ├── mod.rs
+│       ├── path.rs
+│       ├── path_scanner.rs
+│       └── shell.rs
+└── tree.txt
