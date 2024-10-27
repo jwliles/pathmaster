@@ -8,7 +8,7 @@
 //! - Validating PATH entries
 //! - Flushing invalid entries from PATH
 
-use clap::{Parser, Subcommand};
+use clap::{command, Parser, Subcommand};
 use commands::validator;
 
 mod backup;
@@ -18,9 +18,13 @@ mod utils;
 /// CLI configuration and argument parsing for pathmaster
 #[derive(Parser)]
 #[command(name = "pathmaster")]
-#[command(version = "0.1.0")]
+#[command(version = "0.2.2")]
 #[command(about = "A powerful path management tool", long_about = None)]
 struct Cli {
+    /// Control what gets backed up when modifying PATH (default, path, shell, switch)
+    #[arg(long, value_name = "MODE")]
+    backup_mode: Option<String>,
+
     #[command(subcommand)]
     command: Commands,
 }
@@ -64,12 +68,30 @@ enum Commands {
 fn main() {
     let cli = Cli::parse();
 
+    // Initialize backup mode if specified
+    if let Some(mode) = cli.backup_mode {
+        let mut manager = backup::mode::BackupModeManager::new();
+        match mode.as_str() {
+            "default" => manager.reset_to_default(),
+            "path" => manager.confirm_mode_change(backup::mode::BackupMode::PathOnly),
+            "shell" => manager.confirm_mode_change(backup::mode::BackupMode::ShellOnly),
+            "switch" => manager.toggle_mode(),
+            _ => {
+                eprintln!(
+                    "Invalid backup mode: {}. Valid modes are: default, path, shell, switch",
+                    mode
+                );
+                std::process::exit(1);
+            }
+        }
+    }
+
     match &cli.command {
         Commands::Add { directories } => commands::add::execute(directories),
         Commands::Delete { directories } => commands::delete::execute(directories),
         Commands::List => commands::list::execute(),
         Commands::History => backup::show_history(),
-        Commands::Restore { timestamp } => commands::restore::execute(timestamp),
+        Commands::Restore { timestamp } => backup::restore_from_backup(timestamp),
         Commands::Flush => commands::flush::execute(),
         Commands::Check => match validator::validate_path() {
             Ok(validation) => {
