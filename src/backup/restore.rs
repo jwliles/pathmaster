@@ -6,7 +6,7 @@
 //! - Validating backup files
 //! - Updating shell configuration after restore
 
-use crate::backup::get_backup_dir;
+use crate::backup::core::get_backup_dir;
 use crate::utils;
 use std::env;
 use std::fs::File;
@@ -30,7 +30,13 @@ use std::io::Read;
 /// commands::restore::execute(&None);
 /// ```
 pub fn execute(timestamp: &Option<String>) {
-    let backup_dir = get_backup_dir();
+    let backup_dir = match get_backup_dir() {
+        Ok(dir) => dir,
+        Err(e) => {
+            eprintln!("Error getting backup directory: {}", e);
+            return;
+        }
+    };
 
     let backup_file = match timestamp {
         Some(ts) => backup_dir.join(format!("backup_{}.json", ts)),
@@ -84,7 +90,7 @@ pub fn execute(timestamp: &Option<String>) {
 ///
 /// Option containing PathBuf to the most recent backup file,
 /// or None if no backups exist
-fn get_latest_backup(backup_dir: &std::path::Path) -> Option<std::path::PathBuf> {
+pub fn get_latest_backup(backup_dir: &std::path::Path) -> Option<std::path::PathBuf> {
     let mut backups: Vec<_> = std::fs::read_dir(backup_dir).ok()?.flatten().collect();
     backups.sort_by_key(|dir| dir.file_name());
     backups.last().map(|entry| entry.path())

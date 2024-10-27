@@ -6,28 +6,12 @@
 //! - Maintain backups of configurations
 //! - Provide detailed feedback about changes
 
-// src/commands/flush.rs
 use crate::backup;
+use crate::commands::validator::is_valid_path_entry;
 use crate::utils;
 use std::path::PathBuf;
 
 /// Removes invalid directories from the PATH environment variable.
-///
-/// # Process
-/// 1. Creates a backup of current PATH
-/// 2. Identifies and removes invalid directory entries
-/// 3. Updates both the current session PATH and shell configuration
-///
-/// # Feedback
-/// - Logs each removed path
-/// - Reports success or failure of configuration updates
-/// - Indicates if changes are session-only due to config update failure
-///
-/// # Example
-/// ```rust
-/// # use path_finder::commands::flush;
-/// flush::execute();
-/// ```
 pub fn execute() {
     // Backup current PATH
     if let Err(e) = backup::create_backup() {
@@ -43,7 +27,7 @@ pub fn execute() {
     let valid_entries: Vec<PathBuf> = current_entries
         .into_iter()
         .filter(|path| {
-            if utils::is_valid_path_entry(path) {
+            if is_valid_path_entry(path) {
                 true
             } else {
                 println!("Removing invalid path: {}", path.display());
