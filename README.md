@@ -9,12 +9,16 @@
   - [**Table of Contents**](#table-of-contents)
   - [**Introduction**](#introduction)
 - [pathmaster](#pathmaster-1)
-  - [New in Version 0.2.2](#new-in-version-022)
+  - [New in Version 0.2.3](#new-in-version-023)
   - [Features](#features)
+    - [Backup Management](#backup-management)
+  - [New in Version 0.2.2](#new-in-version-022)
+  - [Features](#features-1)
     - [Core Features (Updated in 0.2.2)](#core-features-updated-in-022)
     - [Path Management](#path-management)
     - [Safety Features](#safety-features)
   - [Usage](#usage)
+    - [Backup Mode Configuration](#backup-mode-configuration)
     - [Checking PATH Sources](#checking-path-sources)
     - [Flushing Invalid Paths](#flushing-invalid-paths)
   - [Configuration Files](#configuration-files)
@@ -23,7 +27,7 @@
   - [Upgrading](#upgrading)
   - [Known Issues](#known-issues)
   - [Coming in Future Releases](#coming-in-future-releases)
-  - [**Features**](#features-1)
+  - [**Features**](#features-2)
   - [**Installation**](#installation)
     - [**Prerequisites**](#prerequisites)
     - [**Building from Source**](#building-from-source)
@@ -39,7 +43,7 @@
       - [**restore**](#restore)
     - [**Examples**](#examples)
   - [**Configuration**](#configuration)
-  - [**Backup Management**](#backup-management)
+  - [**Backup Management**](#backup-management-1)
     - [**Backup Modes**](#backup-modes)
     - [**Backup Storage**](#backup-storage)
   - [**Contributing**](#contributing)
@@ -52,6 +56,27 @@
 Managing the `PATH` variable is crucial for system performance and command execution. `pathmaster` provides a safe and efficient way to handle `PATH` modifications, with features designed to prevent errors and maintain system stability.
 
 # pathmaster
+
+## New in Version 0.2.3
+
+- Configurable backup modes for selective backup creation
+- Interactive mode switching functionality
+- Enhanced shell configuration handling
+- Improved backup system flexibility
+- Better documentation and user feedback
+
+## Features
+
+### Backup Management
+
+- Flexible backup modes:
+  - PATH-only backups
+  - Shell-only backups
+  - Combined backups (default)
+  - Easy mode switching
+- Automatic backup creation
+- Comprehensive backup history
+- Safe configuration preservation
 
 ## New in Version 0.2.2
 
@@ -89,6 +114,22 @@ Managing the `PATH` variable is crucial for system performance and command execu
 - Recovery options
 
 ## Usage
+
+### Backup Mode Configuration
+
+```bash
+# Only back up PATH when adding a directory
+pathmaster --backup-mode path add ~/bin
+
+# Only back up shell config when flushing invalid paths
+pathmaster --backup-mode shell flush
+
+# Reset to backing up both
+pathmaster --backup-mode default
+
+# Toggle between backup modes
+pathmaster --backup-mode switch
+```
 
 ### Checking PATH Sources
 
@@ -402,6 +443,13 @@ pathmaster restore [--timestamp <timestamp>]
   ```
 
 ## **Configuration**
+
+pathmaster now supports configurable backup modes to provide more control over what gets backed up during operations. This can be especially useful when:
+
+- You want to focus on PATH management without shell configuration changes
+- You need to manage shell configurations separately
+- You want to minimize backup file creation
+- You're testing different PATH configurations
 
 `pathmaster` modifies your shell configuration file to make changes to `PATH` persistent across sessions.
 
