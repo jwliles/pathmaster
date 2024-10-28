@@ -18,7 +18,7 @@ mod utils;
 /// CLI configuration and argument parsing for pathmaster
 #[derive(Parser)]
 #[command(name = "pathmaster")]
-#[command(version = "0.2.2")]
+#[command(version = "0.2.3")]
 #[command(about = "A powerful path management tool", long_about = None)]
 struct Cli {
     /// Control what gets backed up when modifying PATH (default, path, shell, switch)

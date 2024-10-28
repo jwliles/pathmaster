@@ -1,4 +1,4 @@
-.TH PATHMASTER 1 "October 2024" "Version 0.2.2" "User Commands"
+.TH PATHMASTER 1 "October 2024" "Version 0.2.3" "User Commands"
 
 .SH NAME
 pathmaster \- A powerful tool for managing your system's PATH environment variable
@@ -12,6 +12,17 @@ pathmaster \- A powerful tool for managing your system's PATH environment variab
 .SH DESCRIPTION
 .B pathmaster
 is a comprehensive tool for managing your system's PATH environment variable. It provides functionality for adding and removing directories, validating PATH entries, managing backups, and maintaining PATH integrity.
+.B New in version 0.2.3:
+.RS
+.IP [bu] 2
+Added configurable backup modes for selective backup creation
+.IP [bu]
+Interactive backup mode switching functionality
+.IP [bu]
+Enhanced backup system flexibility
+.IP [bu]
+Improved shell configuration handling
+.RE
 .B New in version 0.2.2:
 .RS
 .IP [bu] 2
@@ -97,28 +108,37 @@ More detailed feedback
 
 .SH OPTIONS
 .TP
-.BR \-\-help
+.BR --help
 Display help information about pathmaster and its commands.
-
 .TP
-.BR \-\-version
+.BR --version
 Display version information.
-
 .TP
-.BR \-\-backup-mode " {default|path|shell|switch}"
+.BR --backup-mode " {default|path|shell|switch}"
 Control what gets backed up when modifying PATH:
 .RS
-.IP \[bu] 2
+.IP [bu] 2
 default: Back up both PATH and shell configuration (default behavior)
-.IP \[bu]
+.IP [bu]
 path: Back up only PATH entries
-.IP \[bu]
+.IP [bu]
 shell: Back up only shell configuration
-.IP \[bu]
+.IP [bu]
 switch: Toggle between PATH-only and shell-only backups
 .RE
 
 .SH VERSION FEATURES
+.SS Version 0.2.3
+.RS
+.IP [bu] 2
+Configurable backup modes for selective backup creation
+.IP [bu]
+Interactive backup mode switching
+.IP [bu]
+Enhanced backup system flexibility
+.IP [bu]
+Improved shell configuration handling
+.RE
 .SS Version 0.2.2
 .RS
 .IP [bu] 2
@@ -176,13 +196,12 @@ View backup history:
 pathmaster history
 .RE
 .fi
-
-Configure backup behavior:
+Configure backup mode:
 .PP
 .nf
 .RS
-pathmaster --backup-mode path add ~/bin     # Only back up PATH
-pathmaster --backup-mode shell flush        # Only back up shell config
+pathmaster --backup-mode path add ~/bin     # Back up only PATH
+pathmaster --backup-mode shell flush        # Back up only shell config
 pathmaster --backup-mode default            # Reset to backing up both
 pathmaster --backup-mode switch             # Toggle between modes
 .RE
@@ -302,6 +321,16 @@ Confirms shell configuration updates
 Indicates backup creation status
 .IP \[bu]
 Warns if changes are session-only due to configuration update failures
+.PP
+When changing backup modes, pathmaster provides:
+.IP [bu] 2
+Clear feedback about current and new modes
+.IP [bu]
+Confirmation of mode changes
+.IP [bu]
+Warnings about potential consequences
+.IP [bu]
+Information about backup creation status
 
 .SH BUGS
 Report bugs to: https://github.com/jwliles/pathmaster/issues
