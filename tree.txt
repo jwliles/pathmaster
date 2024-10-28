@@ -26,5 +26,16 @@
 │       ├── mod.rs
 │       ├── path.rs
 │       ├── path_scanner.rs
-│       └── shell.rs
+│       └── shell
+│           ├── factory.rs
+│           ├── handlers
+│           │   ├── bash.rs
+│           │   ├── fish.rs
+│           │   ├── generic.rs
+│           │   ├── ksh.rs
+│           │   ├── mod.rs
+│           │   ├── tcsh.rs
+│           │   └── zsh.rs
+│           ├── mod.rs
+│           └── types.rs
 └── tree.txt
