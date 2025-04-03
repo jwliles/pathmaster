@@ -117,7 +117,7 @@ impl ShellHandler for ZshHandler {
             // Insert new config at the position of the first PATH declaration
             // Remove newline prefix from format_path_export output
             let new_config = new_path_config.trim_start_matches('\n');
-            for (i, line) in new_config.lines().rev().enumerate() {
+            for line in new_config.lines().rev() {
                 lines.insert(first_mod, line);
             }
             
@@ -189,5 +189,53 @@ export PATH="/another/old/path:$PATH"
         assert!(updated_content.contains("/usr/local/bin"));
         assert!(updated_content.contains("path=("));
         assert!(updated_content.contains("export PATH"));
+    }
+    
+    #[test]
+    fn test_zsh_in_place_update() {
+        let handler = ZshHandler::new();
+        
+        let content = r#"
+# ZSH configuration
+setopt AUTO_CD
+
+# Shell options
+HISTSIZE=1000
+SAVEHIST=1000
+
+# Path configuration
+path=(/usr/bin /old/path /usr/sbin) && export PATH
+
+# Aliases
+alias ls='ls --color=auto'
+"#;
+
+        let new_entries = vec![PathBuf::from("/usr/bin"), PathBuf::from("/usr/local/bin")];
+        let updated_content = handler.update_path_in_config(content, &new_entries);
+        
+        // Verify the PATH was updated in-place
+        let lines: Vec<&str> = updated_content.lines().collect();
+        
+        // Find where the PATH declaration is in the updated content
+        let mut path_line_index = 0;
+        for (i, line) in lines.iter().enumerate() {
+            if line.contains("path=(") {
+                path_line_index = i;
+                break;
+            }
+        }
+        
+        // Check that PATH is still between the shell options and aliases
+        let histsize_line_index = lines.iter().position(|&line| line.contains("SAVEHIST=")).unwrap();
+        let alias_line_index = lines.iter().position(|&line| line.contains("alias ls=")).unwrap();
+        
+        assert!(histsize_line_index < path_line_index, "PATH should be after SAVEHIST line");
+        assert!(path_line_index < alias_line_index, "PATH should be before alias line");
+        
+        // Check content
+        assert!(!updated_content.contains("/old/path"));
+        assert!(updated_content.contains("/usr/bin"));
+        assert!(updated_content.contains("/usr/local/bin"));
+        assert!(updated_content.contains("path=("));
     }
 }

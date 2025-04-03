@@ -137,3 +137,105 @@ impl ShellHandler for BashHandler {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use tempfile::TempDir;
+
+    #[test]
+    fn test_bash_path_parsing() {
+        let handler = BashHandler::new();
+        let content = r#"
+# Some config
+export PATH="/usr/bin:/usr/local/bin"
+PATH=$PATH:~/bin
+"#;
+
+        let entries = handler.parse_path_entries(content);
+        assert_eq!(entries.len(), 3);
+        assert!(entries.iter().any(|p| p.ends_with("usr/bin")));
+        assert!(entries.iter().any(|p| p.ends_with("usr/local/bin")));
+    }
+
+    #[test]
+    fn test_bash_path_formatting() {
+        let handler = BashHandler::new();
+        let entries = vec![PathBuf::from("/usr/bin"), PathBuf::from("/usr/local/bin")];
+
+        let formatted = handler.format_path_export(&entries);
+        assert!(formatted.contains("export PATH=\""));
+        assert!(formatted.contains("/usr/bin:/usr/local/bin"));
+    }
+
+    #[test]
+    fn test_bash_config_update() {
+        let temp_dir = TempDir::new().unwrap();
+        let config_path = temp_dir.path().join(".bashrc");
+
+        let initial_content = r#"
+# Initial config
+export PATH="/usr/bin:/old/path"
+PATH=$PATH:/another/old/path
+"#;
+
+        fs::write(&config_path, initial_content).unwrap();
+
+        let mut handler = BashHandler::new();
+        handler.config_path = config_path.clone();
+
+        let new_entries = vec![PathBuf::from("/usr/bin"), PathBuf::from("/usr/local/bin")];
+
+        handler.update_config(&new_entries).unwrap();
+
+        let updated_content = fs::read_to_string(&config_path).unwrap();
+        assert!(!updated_content.contains("/old/path"));
+        assert!(updated_content.contains("/usr/bin"));
+        assert!(updated_content.contains("/usr/local/bin"));
+    }
+    
+    #[test]
+    fn test_bash_in_place_update() {
+        let handler = BashHandler::new();
+        
+        let content = r#"
+# Header comment
+# Some other configuration
+export EDITOR=vim
+
+# PATH configuration
+export PATH="/usr/bin:/old/path"
+
+# More configuration below
+alias ls='ls --color=auto'
+"#;
+
+        let new_entries = vec![PathBuf::from("/usr/bin"), PathBuf::from("/usr/local/bin")];
+        let updated_content = handler.update_path_in_config(content, &new_entries);
+        
+        // Verify the PATH was updated in-place
+        let lines: Vec<&str> = updated_content.lines().collect();
+        
+        // Find where the PATH declaration is in the updated content
+        let mut path_line_index = 0;
+        for (i, line) in lines.iter().enumerate() {
+            if line.contains("export PATH=") {
+                path_line_index = i;
+                break;
+            }
+        }
+        
+        // Check that PATH is still between the EDITOR and alias lines
+        let editor_line_index = lines.iter().position(|&line| line.contains("export EDITOR=")).unwrap();
+        let alias_line_index = lines.iter().position(|&line| line.contains("alias ls=")).unwrap();
+        
+        assert!(editor_line_index < path_line_index, "PATH should be after EDITOR line");
+        assert!(path_line_index < alias_line_index, "PATH should be before alias line");
+        
+        // Check content
+        assert!(!updated_content.contains("/old/path"));
+        assert!(updated_content.contains("/usr/bin"));
+        assert!(updated_content.contains("/usr/local/bin"));
+    }
+}
