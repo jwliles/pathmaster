@@ -109,26 +109,32 @@ impl ShellHandler for BashHandler {
         // If we found existing PATH modifications, update in place
         if !modifications.is_empty() {
             // Get all lines
-            let mut lines: Vec<&str> = content.lines().collect();
+            let lines: Vec<&str> = content.lines().collect();
             
             // Find the first path modification (which is where we'll update)
             let mut sorted_mods = modifications.clone();
             sorted_mods.sort_by(|a, b| a.line_number.cmp(&b.line_number));
             let first_mod = sorted_mods.first().unwrap().line_number - 1;
             
+            // Create a vector of strings that we own
+            let mut modified_lines = Vec::new();
+            for line in &lines {
+                modified_lines.push((*line).to_string());
+            }
+            
             // Replace only the first path declaration
-            lines[first_mod] = &new_path_config;
+            modified_lines[first_mod] = new_path_config.to_string();
             
             // If there are more path declarations, comment them out rather than removing
             // Removing could cause issues with line numbers in subsequent updates
             for &PathModification{line_number, ..} in sorted_mods.iter().skip(1) {
                 let index = line_number - 1;
                 if index < lines.len() {
-                    lines[index] = &format!("# DISABLED by pathmaster: {}", lines[index]);
+                    modified_lines[index] = format!("# DISABLED by pathmaster: {}", lines[index]);
                 }
             }
             
-            return lines.join("\n");
+            return modified_lines.join("\n");
         } else {
             // No existing PATH declarations found, append to end
             if content.ends_with('\n') {
