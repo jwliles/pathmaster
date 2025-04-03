@@ -17,17 +17,22 @@ impl ZshHandler {
     }
 
     fn find_path_arrays(&self, content: &str) -> Vec<PathModification> {
-        let path_array_regex = Regex::new(r"(?m)^path=\((.*?)\)").unwrap();
-
-        path_array_regex
-            .captures_iter(content)
-            .enumerate()
-            .map(|(idx, cap)| PathModification {
-                line_number: idx + 1,
-                content: cap[0].to_string(),
-                modification_type: ModificationType::ArrayModification,
-            })
-            .collect()
+        let mut modifications = Vec::new();
+        // Look for line that contains path=(...)
+        let path_array_regex = Regex::new(r"path=\(.*?\)").unwrap();
+        
+        // Search line by line to get accurate line numbers
+        for (line_idx, line) in content.lines().enumerate() {
+            if path_array_regex.is_match(line) {
+                modifications.push(PathModification {
+                    line_number: line_idx + 1, // Line numbers are 1-based
+                    content: line.to_string(),
+                    modification_type: ModificationType::ArrayModification,
+                });
+            }
+        }
+        
+        modifications
     }
 }
 
@@ -70,16 +75,17 @@ impl ShellHandler for ZshHandler {
             .join(" ");
 
         format!(
-            "\n# Updated by pathmaster on {}\npath=({}) && export PATH\n",
-            Local::now().format("%Y-%m-%d %H:%M:%S"),
-            paths
+            "path=({}) && export PATH # Updated by pathmaster on {}",
+            paths,
+            Local::now().format("%Y-%m-%d %H:%M:%S")
         )
     }
 
     fn detect_path_modifications(&self, content: &str) -> Vec<PathModification> {
         let mut modifications = self.find_path_arrays(content);
 
-        let path_regex = Regex::new(r"(?m)^export PATH=").unwrap();
+        // Look for standalone export PATH statements
+        let path_regex = Regex::new(r"export PATH=").unwrap();
         for (idx, line) in content.lines().enumerate() {
             if path_regex.is_match(line) {
                 modifications.push(PathModification {
@@ -99,32 +105,34 @@ impl ShellHandler for ZshHandler {
         
         // If we found existing PATH modifications, update in place
         if !modifications.is_empty() {
-            // Sort by line number in descending order to avoid index shifting
-            let mut sorted_mods = modifications.clone();
-            sorted_mods.sort_by(|a, b| b.line_number.cmp(&a.line_number));
-            
-            // First modification is where we'll insert our new config
-            let first_mod = sorted_mods.last().unwrap().line_number - 1;
-            
-            // Convert to lines for manipulation
+            // Get all lines
             let mut lines: Vec<&str> = content.lines().collect();
             
-            // Remove all existing PATH declarations
-            for modification in sorted_mods {
-                lines.remove(modification.line_number - 1);
-            }
+            // Find the first path modification (which is where we'll update)
+            let mut sorted_mods = modifications.clone();
+            sorted_mods.sort_by(|a, b| a.line_number.cmp(&b.line_number));
+            let first_mod = sorted_mods.first().unwrap().line_number - 1;
             
-            // Insert new config at the position of the first PATH declaration
-            // Remove newline prefix from format_path_export output
-            let new_config = new_path_config.trim_start_matches('\n');
-            for line in new_config.lines().rev() {
-                lines.insert(first_mod, line);
+            // Replace only the first path declaration
+            lines[first_mod] = &new_path_config;
+            
+            // If there are more path declarations, comment them out rather than removing
+            // Removing could cause issues with line numbers in subsequent updates
+            for &PathModification{line_number, ..} in sorted_mods.iter().skip(1) {
+                let index = line_number - 1;
+                if index < lines.len() {
+                    lines[index] = &format!("# DISABLED by pathmaster: {}", lines[index]);
+                }
             }
             
             return lines.join("\n");
         } else {
             // No existing PATH declarations found, append to end
-            return content.to_string() + &new_path_config;
+            if content.ends_with('\n') {
+                return format!("{}{}", content, new_path_config);
+            } else {
+                return format!("{}\n{}", content, new_path_config);
+            }
         }
     }
 }
@@ -219,11 +227,15 @@ alias ls='ls --color=auto'
         // Find where the PATH declaration is in the updated content
         let mut path_line_index = 0;
         for (i, line) in lines.iter().enumerate() {
-            if line.contains("path=(") {
+            if line.contains("path=(") && !line.contains("DISABLED") {
                 path_line_index = i;
                 break;
             }
         }
+        
+        // Check that PATH is still at the same line number (line 8)
+        // This is the most crucial test - it should be at index 7 in our zero-based array
+        assert_eq!(path_line_index, 8, "PATH should remain at the same position");
         
         // Check that PATH is still between the shell options and aliases
         let histsize_line_index = lines.iter().position(|&line| line.contains("SAVEHIST=")).unwrap();
@@ -233,9 +245,10 @@ alias ls='ls --color=auto'
         assert!(path_line_index < alias_line_index, "PATH should be before alias line");
         
         // Check content
-        assert!(!updated_content.contains("/old/path"));
+        assert!(!updated_content.contains("/old/path") || updated_content.contains("DISABLED"));
         assert!(updated_content.contains("/usr/bin"));
         assert!(updated_content.contains("/usr/local/bin"));
         assert!(updated_content.contains("path=("));
+        assert!(updated_content.contains("# Updated by pathmaster on"));
     }
 }

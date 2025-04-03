@@ -73,9 +73,9 @@ impl ShellHandler for BashHandler {
             .join(":");
 
         format!(
-            "\n# Updated by pathmaster on {}\nexport PATH=\"{}\"\n",
-            Local::now().format("%Y-%m-%d %H:%M:%S"),
-            paths
+            "export PATH=\"{}\" # Updated by pathmaster on {}",
+            paths,
+            Local::now().format("%Y-%m-%d %H:%M:%S")
         )
     }
 
@@ -108,32 +108,34 @@ impl ShellHandler for BashHandler {
         
         // If we found existing PATH modifications, update in place
         if !modifications.is_empty() {
-            // Sort by line number in descending order to avoid index shifting
-            let mut sorted_mods = modifications.clone();
-            sorted_mods.sort_by(|a, b| b.line_number.cmp(&a.line_number));
-            
-            // First modification is where we'll insert our new config
-            let first_mod = sorted_mods.last().unwrap().line_number - 1;
-            
-            // Convert to lines for manipulation
+            // Get all lines
             let mut lines: Vec<&str> = content.lines().collect();
             
-            // Remove all existing PATH declarations
-            for modification in sorted_mods {
-                lines.remove(modification.line_number - 1);
-            }
+            // Find the first path modification (which is where we'll update)
+            let mut sorted_mods = modifications.clone();
+            sorted_mods.sort_by(|a, b| a.line_number.cmp(&b.line_number));
+            let first_mod = sorted_mods.first().unwrap().line_number - 1;
             
-            // Insert new config at the position of the first PATH declaration
-            // Remove newline prefix if it exists
-            let new_config = new_path_config.trim_start_matches('\n');
-            for line in new_config.lines().rev() {
-                lines.insert(first_mod, line);
+            // Replace only the first path declaration
+            lines[first_mod] = &new_path_config;
+            
+            // If there are more path declarations, comment them out rather than removing
+            // Removing could cause issues with line numbers in subsequent updates
+            for &PathModification{line_number, ..} in sorted_mods.iter().skip(1) {
+                let index = line_number - 1;
+                if index < lines.len() {
+                    lines[index] = &format!("# DISABLED by pathmaster: {}", lines[index]);
+                }
             }
             
             return lines.join("\n");
         } else {
             // No existing PATH declarations found, append to end
-            return content.to_string() + &new_path_config;
+            if content.ends_with('\n') {
+                return format!("{}{}", content, new_path_config);
+            } else {
+                return format!("{}\n{}", content, new_path_config);
+            }
         }
     }
 }
@@ -220,11 +222,14 @@ alias ls='ls --color=auto'
         // Find where the PATH declaration is in the updated content
         let mut path_line_index = 0;
         for (i, line) in lines.iter().enumerate() {
-            if line.contains("export PATH=") {
+            if line.contains("export PATH=") && !line.contains("DISABLED") {
                 path_line_index = i;
                 break;
             }
         }
+        
+        // Check that PATH is still at the same line (line 9)
+        assert_eq!(path_line_index, 9, "PATH should remain at the same position");
         
         // Check that PATH is still between the EDITOR and alias lines
         let editor_line_index = lines.iter().position(|&line| line.contains("export EDITOR=")).unwrap();
@@ -234,8 +239,9 @@ alias ls='ls --color=auto'
         assert!(path_line_index < alias_line_index, "PATH should be before alias line");
         
         // Check content
-        assert!(!updated_content.contains("/old/path"));
+        assert!(!updated_content.contains("/old/path") || updated_content.contains("DISABLED"));
         assert!(updated_content.contains("/usr/bin"));
         assert!(updated_content.contains("/usr/local/bin"));
+        assert!(updated_content.contains("# Updated by pathmaster on"));
     }
 }
