@@ -1,6 +1,6 @@
 [package]
 name = "pathmaster"
-version = "0.2.3"
+version = "0.2.5"
 edition = "2021"
 license = "MIT"
 authors = ["Justin Wayne Liles"]
@@ -8,6 +8,8 @@ description = "pathmaster is a powerful command-line tool written in Rust for ma
 repository = "https://github.com/jwliles/pathmaster"
 readme = "README.md"
 keywords = ["path", "environment", "configuration", "backup", "restore"]
+documentation = "https://jwliles.github.io/pathmaster"
+build = "build.rs"
 
 
 [dependencies]
@@ -23,3 +25,11 @@ regex = "1.5.4"
 [dev-dependencies]
 tempfile = "3.2.0"
 serial_test = "0.5.0"
+
+[[bin]]
+name = "pathmaster"
+path = "src/main.rs"
+
+[[bin]]
+name = "pathmaster-install-man"
+path = "src/bin/install_man.rs"
