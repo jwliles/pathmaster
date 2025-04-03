@@ -79,19 +79,36 @@ impl ShellHandler for FishHandler {
 
     fn update_path_in_config(&self, content: &str, entries: &[PathBuf]) -> String {
         let modifications = self.detect_path_modifications(content);
-
-        // Remove existing PATH modifications
-        let mut updated_content = content
-            .lines()
-            .enumerate()
-            .filter(|(idx, _)| !modifications.iter().any(|m| m.line_number == idx + 1))
-            .map(|(_, line)| line)
-            .collect::<Vec<_>>()
-            .join("\n");
-
-        // Add new PATH configuration
-        updated_content.push_str(&self.format_path_export(entries));
-
-        updated_content
+        let new_path_config = self.format_path_export(entries);
+        
+        // If we found existing PATH modifications, update in place
+        if !modifications.is_empty() {
+            // Sort by line number in descending order to avoid index shifting
+            let mut sorted_mods = modifications.clone();
+            sorted_mods.sort_by(|a, b| b.line_number.cmp(&a.line_number));
+            
+            // First modification is where we'll insert our new config
+            let first_mod = sorted_mods.last().unwrap().line_number - 1;
+            
+            // Convert to lines for manipulation
+            let mut lines: Vec<&str> = content.lines().collect();
+            
+            // Remove all existing PATH declarations
+            for modification in sorted_mods {
+                lines.remove(modification.line_number - 1);
+            }
+            
+            // Insert new config at the position of the first PATH declaration
+            // Remove newline prefix if it exists
+            let new_config = new_path_config.trim_start_matches('\n');
+            for line in new_config.lines().rev() {
+                lines.insert(first_mod, line);
+            }
+            
+            return lines.join("\n");
+        } else {
+            // No existing PATH declarations found, append to end
+            return content.to_string() + &new_path_config;
+        }
     }
 }

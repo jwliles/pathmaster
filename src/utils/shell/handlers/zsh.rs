@@ -95,20 +95,37 @@ impl ShellHandler for ZshHandler {
 
     fn update_path_in_config(&self, content: &str, entries: &[PathBuf]) -> String {
         let modifications = self.detect_path_modifications(content);
-
-        let updated_content = content
-            .lines()
-            .enumerate()
-            .filter(|(idx, line)| {
-                !modifications.iter().any(|m| m.line_number == idx + 1)
-                    && !line.contains("/old/path") // Explicitly filter out old paths
-            })
-            .map(|(_, line)| line)
-            .collect::<Vec<_>>()
-            .join("\n");
-
-        // Add new PATH configuration
-        updated_content + &self.format_path_export(entries)
+        let new_path_config = self.format_path_export(entries);
+        
+        // If we found existing PATH modifications, update in place
+        if !modifications.is_empty() {
+            // Sort by line number in descending order to avoid index shifting
+            let mut sorted_mods = modifications.clone();
+            sorted_mods.sort_by(|a, b| b.line_number.cmp(&a.line_number));
+            
+            // First modification is where we'll insert our new config
+            let first_mod = sorted_mods.last().unwrap().line_number - 1;
+            
+            // Convert to lines for manipulation
+            let mut lines: Vec<&str> = content.lines().collect();
+            
+            // Remove all existing PATH declarations
+            for modification in sorted_mods {
+                lines.remove(modification.line_number - 1);
+            }
+            
+            // Insert new config at the position of the first PATH declaration
+            // Remove newline prefix from format_path_export output
+            let new_config = new_path_config.trim_start_matches('\n');
+            for (i, line) in new_config.lines().rev().enumerate() {
+                lines.insert(first_mod, line);
+            }
+            
+            return lines.join("\n");
+        } else {
+            // No existing PATH declarations found, append to end
+            return content.to_string() + &new_path_config;
+        }
     }
 }
 

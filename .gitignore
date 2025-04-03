@@ -1,4 +1,90 @@
-# Cargo files
-debug/*
-target/*
-Cargo.lock
+# Rust build directory and files
+/target/
+**/*.rs.bk
+# Cargo.lock
+
+# VSCode
+.vscode/
+.vscode-test/
+*.code-workspace
+.history/
+
+# JetBrains (RustRover, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+/out/
+
+# Geany
+*.geany
+*.geanywb
+*.geanyprj
+
+# Vim/Neovim
+*.swp
+*.swo
+*~
+.netrwhist
+Session.vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+.vim/
+.nvimlog
+.vimrc.local
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+.SublimeREPLHistory
+
+# Zed
+.zed/
+.zedstate
+
+# Linux specific
+.directory
+.Trash-*
+.nfs*
+
+# Build and debug
+/target/
+/debug/
+/build/
+*.pdb
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Generated documentation
+/doc/
+/docs/target/
+/docs/book/
+
+# Test coverage
+coverage/
+*.profraw
+
+# Crash logs
+*.log
+
+# Dependency directories
+/vendor/
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.tmp
+*.save
+*.autosave
+
+# Generated test files
+/tests/generated/
