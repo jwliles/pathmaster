@@ -18,14 +18,26 @@ impl ZshHandler {
 
     fn find_path_arrays(&self, content: &str) -> Vec<PathModification> {
         let mut modifications = Vec::new();
-        // Look for line that contains path=(...)
+        // Look for various patterns related to path configuration
+        
+        // Regex for path=(...) pattern
         let path_array_regex = Regex::new(r"path=\(.*?\)").unwrap();
+        
+        // Regex for path+=(...) pattern
+        let path_append_regex = Regex::new(r"path\+=\(").unwrap();
         
         // Search line by line to get accurate line numbers
         for (line_idx, line) in content.lines().enumerate() {
             if path_array_regex.is_match(line) {
                 modifications.push(PathModification {
                     line_number: line_idx + 1, // Line numbers are 1-based
+                    content: line.to_string(),
+                    modification_type: ModificationType::ArrayModification,
+                });
+            } else if path_append_regex.is_match(line) {
+                // This handles multi-line path+=(...) constructs
+                modifications.push(PathModification {
+                    line_number: line_idx + 1,
                     content: line.to_string(),
                     modification_type: ModificationType::ArrayModification,
                 });
@@ -48,6 +60,7 @@ impl ShellHandler for ZshHandler {
     fn parse_path_entries(&self, content: &str) -> Vec<PathBuf> {
         let mut entries = Vec::new();
 
+        // Handle single-line path array: path=(...)
         if let Some(path_array) = content
             .lines()
             .find(|line| line.trim().starts_with("path=("))
@@ -63,19 +76,54 @@ impl ShellHandler for ZshHandler {
                 entries.push(PathBuf::from(expanded.to_string()));
             }
         }
+        
+        // Handle multi-line path+=(...)
+        let mut in_path_block = false;
+        let mut path_entries = Vec::new();
+        
+        for line in content.lines() {
+            let trimmed = line.trim();
+            
+            if trimmed.starts_with("path+=(") {
+                in_path_block = true;
+                continue;
+            }
+            
+            if in_path_block {
+                if trimmed == ")" {
+                    in_path_block = false;
+                    continue;
+                }
+                
+                // Extract the path from quoted entries
+                let path = trimmed
+                    .trim_matches(|c| c == '"' || c == '\'' || c == ' ')
+                    .to_string();
+                
+                if !path.is_empty() {
+                    let expanded = shellexpand::tilde(&path);
+                    path_entries.push(PathBuf::from(expanded.to_string()));
+                }
+            }
+        }
+        
+        // Add path+= entries to our result
+        entries.extend(path_entries);
 
         entries
     }
 
     fn format_path_export(&self, entries: &[PathBuf]) -> String {
+        // Format in multi-line style to match common zsh configurations
         let paths = entries
             .iter()
-            .map(|p| p.to_string_lossy().to_string())
+            .map(|p| format!("  \"{}\"", p.to_string_lossy()))
             .collect::<Vec<_>>()
-            .join(" ");
+            .join("\n");
 
+        // Use path+=() format for better compatibility with existing zsh configurations
         format!(
-            "path=({}) && export PATH # Updated by pathmaster on {}",
+            "path+=(\n{}\n) # Updated by pathmaster on {}\n# Export PATH from path array\nexport PATH",
             paths,
             Local::now().format("%Y-%m-%d %H:%M:%S")
         )
@@ -119,17 +167,23 @@ impl ShellHandler for ZshHandler {
                 modified_lines.push((*line).to_string());
             }
             
-            // Replace only the first path declaration
-            modified_lines[first_mod] = new_path_config.to_string();
+            // Use path+=() format to add to existing paths rather than replacing them
+            let insert_pos = if first_mod + 1 < modified_lines.len() {
+                // Insert after the path declaration
+                first_mod + 1
+            } else {
+                // Insert at the end if we're at the last line
+                first_mod
+            };
             
-            // If there are more path declarations, comment them out rather than removing
-            // Removing could cause issues with line numbers in subsequent updates
-            for &PathModification{line_number, ..} in sorted_mods.iter().skip(1) {
-                let index = line_number - 1;
-                if index < lines.len() {
-                    modified_lines[index] = format!("# DISABLED by pathmaster: {}", lines[index]);
-                }
+            // Updated approach: Insert our new path+= section after the detected path= section
+            // Split the new_path_config by lines and insert each line
+            for (i, line) in new_path_config.lines().rev().enumerate() {
+                modified_lines.insert(insert_pos, line.to_string());
             }
+            
+            // No longer comment out or replace the original declarations
+            // This preserves the structure of the file better
             
             return modified_lines.join("\n");
         } else {
@@ -227,33 +281,36 @@ alias ls='ls --color=auto'
         let new_entries = vec![PathBuf::from("/usr/bin"), PathBuf::from("/usr/local/bin")];
         let updated_content = handler.update_path_in_config(content, &new_entries);
         
-        // Verify the PATH was updated in-place
+        // Verify the PATH was updated in-place and original config preserved
         let lines: Vec<&str> = updated_content.lines().collect();
         
-        // Find where the PATH declaration is in the updated content
-        let mut path_line_index = 0;
-        for (i, line) in lines.iter().enumerate() {
-            if line.contains("path=(") && !line.contains("DISABLED") {
-                path_line_index = i;
-                break;
-            }
-        }
+        // Find where the original PATH declaration is in the updated content
+        let original_path_line_index = lines.iter().position(|&line| 
+            line.contains("path=(/usr/bin /old/path /usr/sbin)")).unwrap();
         
-        // Check that PATH is still at the same line number (line 8)
-        // This is the most crucial test - it should be at index 7 in our zero-based array
-        assert_eq!(path_line_index, 8, "PATH should remain at the same position");
+        // Find where our new path+=(...) declaration is
+        let new_path_line_index = lines.iter().position(|&line| 
+            line.contains("path+=(") && line.contains("Updated by pathmaster")).unwrap_or(0);
         
-        // Check that PATH is still between the shell options and aliases
+        // Check that original PATH is still present and in the correct position
+        assert_eq!(original_path_line_index, 8, "Original PATH should remain at the same position");
+        
+        // Check that new PATH is right after the original path
+        assert!(new_path_line_index > original_path_line_index, 
+            "New PATH declaration should be after the original path declaration");
+        
+        // Check that PATH declarations are still between the shell options and aliases
         let histsize_line_index = lines.iter().position(|&line| line.contains("SAVEHIST=")).unwrap();
         let alias_line_index = lines.iter().position(|&line| line.contains("alias ls=")).unwrap();
         
-        assert!(histsize_line_index < path_line_index, "PATH should be after SAVEHIST line");
-        assert!(path_line_index < alias_line_index, "PATH should be before alias line");
+        assert!(histsize_line_index < original_path_line_index, "PATH should be after SAVEHIST line");
+        assert!(new_path_line_index < alias_line_index, "New PATH entries should be before alias line");
         
         // Check content
-        assert!(!updated_content.contains("/old/path") || updated_content.contains("DISABLED"));
+        assert!(updated_content.contains("/old/path"), "Original paths should be preserved");
         assert!(updated_content.contains("/usr/bin"));
         assert!(updated_content.contains("/usr/local/bin"));
+        assert!(updated_content.contains("path+=("));
         assert!(updated_content.contains("# Updated by pathmaster on"));
     }
 }
