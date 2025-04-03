@@ -32,4 +32,4 @@ path = "src/main.rs"
 
 [[bin]]
 name = "pathmaster-install-man"
-path = "src/bin/install_man.rs"
+path = "src/bin/pathmaster-install-man.rs"
