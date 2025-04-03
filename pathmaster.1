@@ -1,4 +1,4 @@
-.TH PATHMASTER 1 "October 2024" "Version 0.2.3" "User Commands"
+.TH PATHMASTER 1 "December 2024" "Version 0.2.5" "User Commands"
 
 .SH NAME
 pathmaster \- A powerful tool for managing your system's PATH environment variable
@@ -12,6 +12,17 @@ pathmaster \- A powerful tool for managing your system's PATH environment variab
 .SH DESCRIPTION
 .B pathmaster
 is a comprehensive tool for managing your system's PATH environment variable. It provides functionality for adding and removing directories, validating PATH entries, managing backups, and maintaining PATH integrity.
+.B New in version 0.2.5:
+.RS
+.IP [bu] 2
+Enhanced documentation and examples
+.IP [bu]
+Improved error messages
+.IP [bu]
+Better shell detection
+.IP [bu]
+Expanded troubleshooting guide
+.RE
 .B New in version 0.2.3:
 .RS
 .IP [bu] 2
@@ -55,7 +66,7 @@ List all current entries in your PATH, displaying them in a clear, readable form
 Show the backup history of your PATH, displaying available backups with timestamps.
 
 .TP
-.BR restore " [" \-\-timestamp " <timestamp>]"
+.BR restore ", " \-r " [" \-\-timestamp " <timestamp>]"
 Restore your PATH from a previous backup. If no timestamp is provided, restores from the most recent backup.
 
 .TP
@@ -78,10 +89,7 @@ Maintains a backup for recovery if needed
 
 .TP
 .BR check ", " \-c
-Validate current PATH entries, identifying invalid or missing directories.
-.TP
-.BR check ", " -c
-Validate current PATH entries, identifying invalid or missing directories. Version 0.2.2 adds:
+Validate current PATH entries, identifying invalid or missing directories. 
 .RS
 .IP [bu] 2
 Source identification for PATH entries
@@ -91,19 +99,6 @@ Sudo requirement detection
 Shell-specific configuration details
 .IP [bu]
 Framework compatibility information
-.RE
-.TP
-.BR flush ", " -f
-Remove all non-existing directories from your PATH automatically. Enhanced in 0.2.2 with:
-.RS
-.IP [bu] 2
-Improved invalid path detection
-.IP [bu]
-Better modification source tracking
-.IP [bu]
-Enhanced shell configuration handling
-.IP [bu]
-More detailed feedback
 .RE
 
 .SH OPTIONS
@@ -168,6 +163,22 @@ Add multiple directories:
 .nf
 .RS
 pathmaster add ~/bin ~/scripts /usr/local/bin
+.RE
+.fi
+
+List PATH entries:
+.PP
+.nf
+.RS
+pathmaster list
+.RE
+.fi
+
+Check for invalid paths:
+.PP
+.nf
+.RS
+pathmaster check
 .RE
 .fi
 
