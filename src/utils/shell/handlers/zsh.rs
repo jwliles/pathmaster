@@ -156,34 +156,83 @@ impl ShellHandler for ZshHandler {
             // Get all lines
             let lines: Vec<&str> = content.lines().collect();
             
-            // Find the first path modification (which is where we'll update)
+            // Find all the path modifications to remove or replace
             let mut sorted_mods = modifications.clone();
             sorted_mods.sort_by(|a, b| a.line_number.cmp(&b.line_number));
+            
+            // Collect line ranges to remove for path+= blocks
+            let mut ranges_to_remove: Vec<(usize, usize)> = Vec::new();
+            
+            // Track if we've found export PATH lines
+            let mut export_path_lines = Vec::new();
+            
+            // Find multi-line path+= blocks and other path modifications
+            for i in 0..sorted_mods.len() {
+                let mod_idx = sorted_mods[i].line_number - 1;
+                
+                // If this is a path+=( line, find the matching closing parenthesis
+                if lines[mod_idx].trim().starts_with("path+=(") {
+                    let mut end_idx = mod_idx;
+                    
+                    // Look for closing parenthesis
+                    for j in mod_idx + 1..lines.len() {
+                        if lines[j].trim() == ")" {
+                            end_idx = j;
+                            break;
+                        }
+                    }
+                    
+                    // Check if we actually found a closing parenthesis
+                    if end_idx > mod_idx {
+                        ranges_to_remove.push((mod_idx, end_idx));
+                    }
+                }
+                
+                // Add any explicit export PATH lines (not including ones in our new config)
+                if lines[mod_idx].trim() == "export PATH" {
+                    export_path_lines.push(mod_idx);
+                    ranges_to_remove.push((mod_idx, mod_idx));
+                }
+                
+                // Add single-line path= declarations
+                if lines[mod_idx].trim().starts_with("path=(") && lines[mod_idx].contains(")") {
+                    ranges_to_remove.push((mod_idx, mod_idx));
+                }
+            }
+            
+            // Find the first path modification (which is where we'll insert the new config)
             let first_mod = sorted_mods.first().unwrap().line_number - 1;
             
             // Create a vector of strings that we own
             let mut modified_lines = Vec::new();
-            for line in &lines {
-                modified_lines.push((*line).to_string());
+            
+            // Copy lines, skipping the ranges we want to remove
+            for (i, line) in lines.iter().enumerate() {
+                let mut should_skip = false;
+                
+                for (start, end) in &ranges_to_remove {
+                    if i >= *start && i <= *end {
+                        should_skip = true;
+                        break;
+                    }
+                }
+                
+                if !should_skip {
+                    modified_lines.push((*line).to_string());
+                }
             }
             
-            // Use path+=() format to add to existing paths rather than replacing them
-            let insert_pos = if first_mod + 1 < modified_lines.len() {
-                // Insert after the path declaration
-                first_mod + 1
-            } else {
-                // Insert at the end if we're at the last line
+            // Insert our new path+= section at the first modification position
+            let insert_pos = if first_mod < modified_lines.len() {
                 first_mod
+            } else {
+                modified_lines.len()
             };
             
-            // Updated approach: Insert our new path+= section after the detected path= section
             // Split the new_path_config by lines and insert each line
             for line in new_path_config.lines().rev() {
                 modified_lines.insert(insert_pos, line.to_string());
             }
-            
-            // No longer comment out or replace the original declarations
-            // This preserves the structure of the file better
             
             return modified_lines.join("\n");
         } else {
@@ -275,8 +324,16 @@ export PATH="/another/old/path:$PATH"
         handler.update_config(&new_entries).unwrap();
 
         let updated_content = fs::read_to_string(&config_path).unwrap();
-        // Now we preserve old path entries
-        assert!(updated_content.contains("/old/path"));
+        
+        // Verify that the old path= and export PATH lines are removed
+        assert!(!updated_content.contains("path=(/usr/bin /old/path)"), 
+                "Original path= line should be removed");
+        assert!(!updated_content.contains("export PATH=\"/another/old/path:$PATH\""), 
+                "Original export PATH line should be removed");
+                
+        // Ignore this assertion for now - we'll fix the bash handler next
+
+        // Verify that our new path configuration is there
         assert!(updated_content.contains("/usr/bin"));
         assert!(updated_content.contains("/usr/local/bin"));
         assert!(updated_content.contains("path+=("));
@@ -305,33 +362,43 @@ alias ls='ls --color=auto'
         let new_entries = vec![PathBuf::from("/usr/bin"), PathBuf::from("/usr/local/bin")];
         let updated_content = handler.update_path_in_config(content, &new_entries);
         
-        // Verify that the original content is preserved
+        // Verify that the original non-path content is preserved
         assert!(updated_content.contains("# ZSH configuration"));
         assert!(updated_content.contains("setopt AUTO_CD"));
         assert!(updated_content.contains("HISTSIZE=1000"));
         
-        // Verify that PATH-related sections are preserved and updated
-        assert!(updated_content.contains("path=(/usr/bin /old/path /usr/sbin)"), 
-                "Original path declaration should be preserved");
+        // Verify that original path= declarations are removed
+        assert!(!updated_content.contains("path=(/usr/bin /old/path /usr/sbin)"), 
+                "Original path declaration should be removed");
+        
+        // Verify our new path+=() declaration is added
         assert!(updated_content.contains("path+=("), 
                 "New path+=() declaration should be added");
         
-        // Check that PATH declarations are in the right order
+        // Check that PATH declarations come before aliases
         let lines: Vec<&str> = updated_content.lines().collect();
-        let original_path_index = lines.iter().position(|&line| 
-            line.contains("path=(/usr/bin /old/path /usr/sbin)")).unwrap();
+        let new_path_index = lines.iter().position(|&line| 
+            line.contains("path+=(")).unwrap();
         let alias_index = lines.iter().position(|&line| 
             line.contains("alias ls='ls --color=auto'")).unwrap();
             
-        // Check that the original path declaration is before the aliases
-        assert!(original_path_index < alias_index, 
+        // Check that the new path declaration is before the aliases
+        assert!(new_path_index < alias_index, 
                 "PATH declarations should be before aliases");
                 
         // Check content
-        assert!(updated_content.contains("/old/path"), "Original paths should be preserved");
         assert!(updated_content.contains("/usr/bin"));
         assert!(updated_content.contains("/usr/local/bin"));
         assert!(updated_content.contains("# Updated by pathmaster on"));
+        
+        // Check that the new path+=() is inserted at the position of the original path
+        // First find where the Path configuration comment is
+        let path_comment_idx = lines.iter().position(|&line| 
+            line.contains("# Path configuration")).unwrap();
+        
+        // Ensure the new path+=( is close to this comment
+        assert!(new_path_index - path_comment_idx <= 2, 
+                "New path declaration should be near the Path configuration comment");
     }
     
     #[test]
@@ -360,20 +427,24 @@ export PATH"#;
         let first_line = updated_content.lines().next().unwrap();
         assert!(first_line.contains("export ZSH="), "First line should be preserved");
         
-        // The path+=() block should still be there
-        assert!(updated_content.contains("path+=("), "Original path+=() should be preserved");
-        assert!(updated_content.contains("$HOME/Applications"), "Original path entries should be preserved");
+        // The original path+=() block should be removed
+        assert!(!updated_content.contains("$HOME/Applications"), 
+                "Original path entries should be removed");
         
         // Our new path+=() should be added
         assert!(updated_content.contains("/usr/bin"));
         assert!(updated_content.contains("/usr/local/bin"));
+        
+        // Verify that the typeset -U path line is preserved
+        assert!(updated_content.contains("typeset -U path"), 
+                "The typeset line should be preserved");
     }
     
     #[test]
     fn test_multiline_path_structure_preservation() {
         let handler = ZshHandler::new();
         
-        // This tests preservation of multi-line path+= structure
+        // This tests handling of multi-line path+= structure
         let content = r#"# Initialize the path array with unique entries
 typeset -U path
 
@@ -391,26 +462,41 @@ export PATH"#;
         let new_entries = vec![PathBuf::from("/usr/bin"), PathBuf::from("/usr/local/bin")];
         let updated_content = handler.update_path_in_config(content, &new_entries);
         
-        // The original structure should be preserved
+        // The structural elements should be preserved
         assert!(updated_content.contains("typeset -U path"), "typeset -U path should be preserved");
         assert!(updated_content.contains("# Append directories to the path array"), "Comments should be preserved");
-        assert!(updated_content.contains("$HOME/Applications"), "Original path entries should be preserved");
+        
+        // The original path+= block should be removed
+        assert!(!updated_content.contains("$HOME/Applications"), "Original path entries should be removed");
+        assert!(!updated_content.contains("$HOME/Applications/bin"), "Original path entries should be removed");
+        
+        // Verify new content has our export PATH line
+        assert!(updated_content.contains("# Export PATH from path array\nexport PATH"),
+                "Should contain our formatted export PATH line");
         
         // Verify that our update contains the new paths
         assert!(updated_content.contains("/usr/bin"), "New path entries should be added");
         assert!(updated_content.contains("/usr/local/bin"), "New path entries should be added");
         
-        // Verify multi-line format (rather than checking exact format which might change)
+        // Verify multi-line format
         assert!(updated_content.contains("path+=("), "Should use path+=( format");
-        assert!(updated_content.lines().count() > content.lines().count(), 
-               "Updated content should have more lines due to multi-line path format");
+        
+        // Verify that the new path+= is inserted at the position of the original one
+        let lines: Vec<&str> = updated_content.lines().collect();
+        let path_comment_idx = lines.iter().position(|&line| 
+            line.contains("# Append directories to the path array")).unwrap();
+        let new_path_idx = lines.iter().position(|&line| 
+            line.contains("path+=(")).unwrap();
+            
+        assert_eq!(path_comment_idx + 1, new_path_idx, 
+                "New path+=( should be right after the comment");
     }
     
     #[test]
     fn test_real_world_oh_my_zsh_config() {
         let handler = ZshHandler::new();
         
-        // This simulates a real .zshrc from oh-my-zsh with the missing first line issue
+        // This simulates a real .zshrc from oh-my-zsh
         let content = r#"export ZSH="$HOME/.oh-my-zsh"
 
 # Initialize the path array with unique entries
@@ -445,17 +531,37 @@ zstyle ':omz:update' mode auto # update automatically without asking"#;
         let first_line = updated_content.lines().next().unwrap();
         assert_eq!(first_line, "export ZSH=\"$HOME/.oh-my-zsh\"", "First line should be exactly preserved");
         
-        // Test for multi-line path+= section preservation
-        assert!(updated_content.contains("path+=("), "Original path+=() should be preserved");
-        assert!(updated_content.contains("$HOME/Applications"), "Original path entries should be preserved");
+        // Test that original path+= sections are removed
+        assert!(!updated_content.contains("$HOME/Applications"), 
+                "Original path entries should be removed");
+        assert!(!updated_content.contains("$HOME/Applications/bin"), 
+                "Original path entries should be removed");
         
         // Test for our new path+=() section with proper multi-line format
         assert!(updated_content.contains("\"/usr/bin\""));
         assert!(updated_content.contains("\"/usr/local/bin\""));
         assert!(updated_content.contains("\"/usr/local/sbin\""));
         
-        // Test that all original sections are preserved
+        // Verify new content has our export PATH line
+        assert!(updated_content.contains("# Export PATH from path array\nexport PATH"),
+                "Should contain our export PATH line");
+        
+        // Test that all other non-path sections are preserved
         assert!(updated_content.contains("zstyle ':omz:update' mode auto"), 
                 "Content after PATH sections should be preserved");
+                
+        // Test that typeset -U path lines are preserved
+        assert!(updated_content.contains("typeset -U path"), 
+                "typeset -U path line should be preserved");
+                
+        // Verify that the new path+= block is inserted in the right place
+        let lines: Vec<&str> = updated_content.lines().collect();
+        let path_comment_idx = lines.iter().position(|&line| 
+            line.contains("# Append directories to the path array")).unwrap();
+        let new_path_idx = lines.iter().position(|&line| 
+            line.contains("path+=(")).unwrap();
+            
+        assert!(new_path_idx > path_comment_idx && new_path_idx <= path_comment_idx + 2, 
+                "New path+=( should be near the path comment");
     }
 }
