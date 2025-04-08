@@ -2,7 +2,7 @@
 
 A powerful command-line tool for managing your system's PATH environment variable, providing safe and efficient PATH manipulation with automatic backups and validation.
 
-Version: 0.2.5
+Version: 0.2.7
 
 [![Crates.io](https://img.shields.io/crates/v/pathmaster.svg)](https://crates.io/crates/pathmaster)
 [![Documentation](https://docs.rs/pathmaster/badge.svg)](https://docs.rs/pathmaster)
