@@ -13,7 +13,8 @@ pathmaster provides comprehensive support for various shell environments, ensuri
 ### zsh
 - Full zsh compatibility
 - .zshrc management
-- path array support
+- path array support (both path=() and path+=() formats)
+- Prevents duplicate PATH entries
 - Framework compatibility
 
 ### fish
@@ -46,6 +47,8 @@ pathmaster provides comprehensive support for various shell environments, ensuri
 - Safe configuration updates
 - Automatic backups
 - Syntax preservation
+- Prevent duplicate path entries
+- Proper in-place updates
 - Error handling
 
 ### Shell Integration

@@ -26,9 +26,10 @@ Managing PATH manually can be risky and error-prone. Pathmaster helps by:
 
 ## Version Information
 
-Current version: 0.2.5
+Current version: 0.2.6
 
 - Enhanced documentation
-- Improved shell detection
+- Improved shell detection and configuration management
+- Fixed duplicate path entries in zsh configurations
 - Better error handling
 - Comprehensive backup mode support
