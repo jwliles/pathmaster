@@ -26,9 +26,17 @@ jobs:
       - name: Build Documentation
         run: mdbook build docs
 
+      - name: Verify Documentation
+        run: |
+          echo "Checking generated documentation..."
+          ls -la docs/book/
+          ls -la docs/book/getting-started/
+          cat docs/book/index.html | head -30
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/book
           force_orphan: true
+          cname: docs.pathmaster.dev
