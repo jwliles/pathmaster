@@ -26,7 +26,7 @@ Managing PATH manually can be risky and error-prone. Pathmaster helps by:
 
 ## Version Information
 
-Current version: 0.2.6
+Current version: 0.2.7
 
 - Enhanced documentation
 - Improved shell detection and configuration management
