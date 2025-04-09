@@ -1,0 +1,76 @@
+/* Improve code block readability */
+pre > code {
+  padding: 1em;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Better table styling */
+table {
+  width: 100%;
+  margin: 1em 0;
+  border-collapse: collapse;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+/* Improve navigation readability */
+.sidebar {
+  padding: 1em;
+  border-right: 1px solid #eee;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.chapter {
+  padding: 0.5em 0;
+}
+
+.chapter li {
+  margin: 6px 0;
+}
+
+/* Enhanced overall styling */
+body {
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4 {
+  color: #2c3e50;
+  margin-top: 1.5em;
+  margin-bottom: 0.8em;
+  border-bottom: 1px solid #eaecef;
+  padding-bottom: 0.3em;
+}
+
+a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Code styling */
+code {
+  background-color: rgba(27, 31, 35, 0.05);
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+/* Theme colors */
+:root {
+  --sidebar-active: #005cc5;
+  --links: #0366d6;
+}

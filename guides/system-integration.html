@@ -1,0 +1,339 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>System Integration - pathmaster Documentation</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="Comprehensive documentation for the pathmaster PATH management tool">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/custom.css">
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "ayu" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = null;
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Getting Started</li><li class="chapter-item expanded "><a href="../getting-started/installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="../getting-started/quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="../getting-started/basic-usage.html"><strong aria-hidden="true">3.</strong> Basic Usage</a></li><li class="chapter-item expanded affix "><li class="part-title">Commands</li><li class="chapter-item expanded "><a href="../commands/overview.html"><strong aria-hidden="true">4.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../commands/path-management.html"><strong aria-hidden="true">5.</strong> PATH Management</a></li><li class="chapter-item expanded "><a href="../commands/validation.html"><strong aria-hidden="true">6.</strong> Validation</a></li><li class="chapter-item expanded "><a href="../commands/backup.html"><strong aria-hidden="true">7.</strong> Backup Operations</a></li><li class="chapter-item expanded affix "><li class="part-title">Features</li><li class="chapter-item expanded "><a href="../features/overview.html"><strong aria-hidden="true">8.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../features/backup-system.html"><strong aria-hidden="true">9.</strong> Backup System</a></li><li class="chapter-item expanded "><a href="../features/shell-support.html"><strong aria-hidden="true">10.</strong> Shell Support</a></li><li class="chapter-item expanded "><a href="../features/validation.html"><strong aria-hidden="true">11.</strong> Validation</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guides</li><li class="chapter-item expanded "><a href="../guides/error-handling.html"><strong aria-hidden="true">12.</strong> Error Handling</a></li><li class="chapter-item expanded "><a href="../guides/troubleshooting.html"><strong aria-hidden="true">13.</strong> Troubleshooting</a></li><li class="chapter-item expanded "><a href="../guides/system-integration.html" class="active"><strong aria-hidden="true">14.</strong> System Integration</a></li><li class="chapter-item expanded "><a href="../guides/migration.html"><strong aria-hidden="true">15.</strong> Migration Guide</a></li><li class="chapter-item expanded affix "><li class="part-title">Reference</li><li class="chapter-item expanded "><a href="../reference/shell-config.html"><strong aria-hidden="true">16.</strong> Shell Configuration</a></li><li class="chapter-item expanded "><a href="../reference/backup-formats.html"><strong aria-hidden="true">17.</strong> Backup Formats</a></li><li class="chapter-item expanded "><a href="../reference/configuration.html"><strong aria-hidden="true">18.</strong> Configuration Options</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><a href="../ROADMAP.html">Roadmap</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">pathmaster Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/jwliles/pathmaster" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/jwliles/pathmaster/edit/main/docs/src/guides/system-integration.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="system-integration"><a class="header" href="#system-integration">System Integration</a></h1>
+<p>This guide explains how to integrate pathmaster with other tools, scripts, and system components for a seamless experience.</p>
+<h2 id="integrating-with-shell-startup"><a class="header" href="#integrating-with-shell-startup">Integrating with Shell Startup</a></h2>
+<p>Pathmaster automatically integrates with your shell configuration files, but you can enhance this integration:</p>
+<h3 id="adding-to-login-scripts"><a class="header" href="#adding-to-login-scripts">Adding to Login Scripts</a></h3>
+<p>For system-wide PATH initialization, you can call pathmaster in your login scripts:</p>
+<pre><code class="language-bash"># In /etc/profile or similar
+if command -v pathmaster &gt;/dev/null 2&gt;&amp;1; then
+    # Run a validation check at login
+    pathmaster check &gt;/dev/null 2&gt;&amp;1
+fi
+</code></pre>
+<h3 id="shell-aliases"><a class="header" href="#shell-aliases">Shell Aliases</a></h3>
+<p>Add these aliases to your shell configuration for quicker access:</p>
+<pre><code class="language-bash"># Bash/Zsh
+alias pm='pathmaster'
+alias pmlist='pathmaster list'
+alias pmcheck='pathmaster check'
+alias pmflush='pathmaster flush'
+
+# Fish
+alias pm 'pathmaster'
+alias pmlist 'pathmaster list'
+alias pmcheck 'pathmaster check'
+alias pmflush 'pathmaster flush'
+</code></pre>
+<h2 id="script-integration"><a class="header" href="#script-integration">Script Integration</a></h2>
+<p>Pathmaster can be integrated into automation scripts:</p>
+<h3 id="exit-code-handling"><a class="header" href="#exit-code-handling">Exit Code Handling</a></h3>
+<p>Pathmaster returns standard exit codes that you can use in scripts:</p>
+<pre><code class="language-bash">#!/bin/bash
+# Example script using pathmaster
+
+# Add a directory to PATH
+pathmaster add ~/new-scripts
+
+# Check the exit code
+if [ $? -eq 0 ]; then
+    echo &quot;Directory added successfully&quot;
+else
+    echo &quot;Failed to add directory&quot;
+    exit 1
+fi
+
+# Check for invalid paths
+pathmaster check
+if [ $? -ne 0 ]; then
+    echo &quot;Warning: Invalid paths detected&quot;
+fi
+</code></pre>
+<h3 id="capturing-output"><a class="header" href="#capturing-output">Capturing Output</a></h3>
+<p>You can capture and parse pathmaster output in scripts:</p>
+<pre><code class="language-bash">#!/bin/bash
+# Get current PATH as a list
+paths=$(pathmaster list | grep -v &quot;Current PATH&quot;)
+
+# Process each path
+echo &quot;$paths&quot; | while read -r line; do
+    echo &quot;Processing: $line&quot;
+    # Do something with each path...
+done
+</code></pre>
+<h2 id="system-maintenance-integration"><a class="header" href="#system-maintenance-integration">System Maintenance Integration</a></h2>
+<h3 id="cron-jobs"><a class="header" href="#cron-jobs">Cron Jobs</a></h3>
+<p>You can set up periodic maintenance with cron:</p>
+<pre><code class="language-bash"># Add this to crontab -e
+# Check and flush invalid paths weekly
+0 0 * * 0 /usr/bin/pathmaster flush &gt;/dev/null 2&gt;&amp;1
+</code></pre>
+<h3 id="system-updates"><a class="header" href="#system-updates">System Updates</a></h3>
+<p>Add pathmaster checks to post-update scripts:</p>
+<pre><code class="language-bash">#!/bin/bash
+# After system update script
+
+# Update system packages
+apt-get update &amp;&amp; apt-get upgrade -y
+
+# Check PATH for any broken links after update
+pathmaster check
+
+# Optionally flush invalid paths
+# pathmaster flush
+</code></pre>
+<h2 id="package-manager-integration"><a class="header" href="#package-manager-integration">Package Manager Integration</a></h2>
+<p>If you're building packages that need to add directories to PATH:</p>
+<h3 id="post-installation-hook"><a class="header" href="#post-installation-hook">Post-installation Hook</a></h3>
+<pre><code class="language-bash">#!/bin/bash
+# Post-install script
+
+# If pathmaster is available, use it
+if command -v pathmaster &gt;/dev/null 2&gt;&amp;1; then
+    pathmaster add /opt/my-package/bin
+else
+    # Fallback: Update PATH in standard shell configs
+    echo 'export PATH=&quot;$PATH:/opt/my-package/bin&quot;' &gt;&gt; /etc/profile.d/my-package.sh
+fi
+</code></pre>
+<h2 id="directory-service-integration"><a class="header" href="#directory-service-integration">Directory Service Integration</a></h2>
+<p>For enterprise environments with managed directories:</p>
+<pre><code class="language-bash">#!/bin/bash
+# Directory service integration script
+
+# Get list of valid application paths from directory service
+valid_paths=$(ldapsearch -x -LLL &quot;(&amp;(objectClass=applicationPath)(status=active))&quot; path | grep &quot;^path:&quot; | awk '{print $2}')
+
+# Add each valid path
+echo &quot;$valid_paths&quot; | while read -r path; do
+    if [ -d &quot;$path&quot; ]; then
+        pathmaster add &quot;$path&quot;
+    fi
+done
+</code></pre>
+<h2 id="containerization"><a class="header" href="#containerization">Containerization</a></h2>
+<p>For Docker or containerized environments:</p>
+<pre><code class="language-dockerfile"># Example Dockerfile with pathmaster
+FROM ubuntu:latest
+
+# Install pathmaster
+RUN apt-get update &amp;&amp; apt-get install -y cargo
+RUN cargo install pathmaster
+
+# Setup container paths
+RUN pathmaster add /app/bin /custom/tools
+
+# ...rest of Dockerfile
+</code></pre>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<ol>
+<li><strong>Check before modification</strong>: In scripts, use <code>pathmaster check</code> before making changes</li>
+<li><strong>Handle errors gracefully</strong>: Always check exit codes in scripts</li>
+<li><strong>Backup when automating</strong>: Consider creating manual backups before automated changes</li>
+<li><strong>Limit automation scope</strong>: Be cautious with automation that might modify PATH</li>
+<li><strong>Test integrations</strong>: Verify your integrations in a safe environment first</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../guides/troubleshooting.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../guides/migration.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../guides/troubleshooting.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../guides/migration.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
