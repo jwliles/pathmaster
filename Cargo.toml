@@ -8,7 +8,7 @@ description = "pathmaster is a powerful command-line tool written in Rust for ma
 repository = "https://github.com/jwliles/pathmaster"
 readme = "README.md"
 keywords = ["path", "environment", "configuration", "backup", "restore"]
-documentation = "https://jwliles.github.io/pathmaster"
+documentation = "https://pathmaster.readthedocs.io/"
 build = "build.rs"
 
 
