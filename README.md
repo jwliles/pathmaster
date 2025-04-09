@@ -5,7 +5,7 @@ A powerful command-line tool for managing your system's PATH environment variabl
 Version: 0.2.8
 
 [![Crates.io](https://img.shields.io/crates/v/pathmaster.svg)](https://crates.io/crates/pathmaster)
-[![Documentation Status](https://readthedocs.org/projects/pathmaster/badge/?version=latest)](https://pathmaster.readthedocs.io/en/latest/?badge=latest)
+[![Documentation](https://img.shields.io/badge/docs-ReadTheDocs-blue.svg)](https://pathmaster.readthedocs.io/)
 [![API Docs](https://docs.rs/pathmaster/badge.svg)](https://docs.rs/pathmaster)
 
 ## Features
