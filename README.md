@@ -5,7 +5,8 @@ A powerful command-line tool for managing your system's PATH environment variabl
 Version: 0.2.7
 
 [![Crates.io](https://img.shields.io/crates/v/pathmaster.svg)](https://crates.io/crates/pathmaster)
-[![Documentation](https://docs.rs/pathmaster/badge.svg)](https://docs.rs/pathmaster)
+[![Documentation Status](https://readthedocs.org/projects/pathmaster/badge/?version=latest)](https://pathmaster.readthedocs.io/en/latest/?badge=latest)
+[![API Docs](https://docs.rs/pathmaster/badge.svg)](https://docs.rs/pathmaster)
 
 ## Features
 
@@ -22,7 +23,7 @@ Version: 0.2.7
 - Flexible backup modes for different needs
 - Complete shell configuration management
 
-See our [Roadmap](https://jwliles.github.io/pathmaster/ROADMAP.html) for more details.
+See our [Roadmap](https://pathmaster.readthedocs.io/en/latest/src/ROADMAP.html) for more details.
 
 ## Quick Start
 
@@ -66,7 +67,8 @@ pathmaster history
 
 ## Documentation
 
-- **Online Documentation**: [https://jwliles.github.io/pathmaster](https://jwliles.github.io/pathmaster)
+- **User Documentation**: [https://pathmaster.readthedocs.io/](https://pathmaster.readthedocs.io/)
+- **API Documentation**: [https://docs.rs/pathmaster](https://docs.rs/pathmaster)
 - **Man Page**: `man pathmaster`
 - **Command Help**: `pathmaster --help`
 
