@@ -30,6 +30,6 @@
 - [Backup Formats](reference/backup-formats.md)
 - [Configuration Options](reference/configuration.md)
 
----
-
-[Roadmap](ROADMAP.md)
+# Project Information
+- [Roadmap](ROADMAP.md)
+- [ReadTheDocs](https://pathmaster.readthedocs.io/)

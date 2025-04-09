@@ -1,4 +1,4 @@
-name: Deploy MDBook Documentation
+name: MDBook Documentation (Archived)
 
 on:
   push:
@@ -29,9 +29,16 @@ jobs:
       - name: Verify Documentation
         run: |
           echo "Checking generated documentation..."
+          echo "Main directory:"
           ls -la docs/book/
+          echo "Doc structure and roadmap:"
+          ls -la docs/book/ROADMAP.html || echo "ROADMAP.html not found in expected location"
+          echo "Getting started section:"
           ls -la docs/book/getting-started/
+          echo "Index file header:"
           cat docs/book/index.html | head -30
+          echo "Checking links in SUMMARY.html:"
+          grep -o '<a href="[^"]*"' docs/book/SUMMARY.html || echo "No links found in SUMMARY.html"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
