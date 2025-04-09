@@ -23,7 +23,7 @@ Version: 0.2.8
 - Flexible backup modes for different needs
 - Complete shell configuration management
 
-See our [Roadmap](https://pathmaster.readthedocs.io/en/latest/src/ROADMAP.html) for more details.
+See our [Roadmap](https://pathmaster.readthedocs.io/en/latest/ROADMAP.html) for more details.
 
 ## Quick Start
 
