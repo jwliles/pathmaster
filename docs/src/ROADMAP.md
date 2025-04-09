@@ -1,108 +1,94 @@
-# Documentation Roadmap
+# Pathmaster Roadmap
 
-## Current Documentation
+This document outlines the current and planned features for Pathmaster, providing visibility into the project's direction and future development.
 
-Active documentation sections with content:
+## Current Features (v0.2.7)
 
-### Core Documentation
+### Path Management
+- ✅ Add directories to PATH
+- ✅ Remove directories from PATH
+- ✅ List current PATH entries
+- ✅ Check paths for validity
 
-- README.md - Project overview and quick start
-- pathmaster.1 - Command reference and usage
+### Validation
+- ✅ Identify invalid path entries
+- ✅ Flush invalid entries with confirmation
+- ✅ Prevent duplicates and circular references
 
-### Getting Started
+### Shell Support
+- ✅ Basic shell configuration detection
+- ✅ Support for major shells (Bash, Zsh, Fish)
+- ✅ Configuration file path detection
 
-- basic-usage.md
-- [Future] installation.md
-- [Future] quick-start.md
+### Basic Backup System (Current Implementation)
+- ✅ Create basic JSON backups of PATH
+- ✅ Restore from backups
+- ✅ View backup history
+- ⚠️ Limited format options
+- ⚠️ Fixed backup location
+- ⚠️ Basic shell configuration handling
 
-### Features
+## Backup System Improvements (v0.3.0)
 
-- backup-system/
-  - backup-modes.md
-  - backup-storage-management.md
-  - restoration-process.md
-- shell-support/
-  - shell-handlers.md
-  - configuration-manangement.md
-  - framework-integration.md
+The existing backup system will be enhanced to provide more robust and flexible functionality:
 
-## Planned Documentation
-
-Topics to be added based on user needs:
-
-### Command Documentation
-
-- Path Management
-  - Adding directories
-  - Removing directories
-  - Listing entries
-- Validation
-  - Checking paths
-  - Flushing invalid entries
-- Backup Operations
-  - Creating backups
-  - Viewing history
-  - Restoring backups
-
-### Configuration
-
-- Backup settings
-- Shell configuration
-- Custom configurations
-
-### Advanced Topics
-
-- Custom shell support
-- System integration
-- Framework integration
-- Troubleshooting guides
-
-### Development
-
-- Architecture overview
-- Contributing guidelines
-- Release process
-- Testing guide
-
-## Version History
-
-- Version 0.2.3 features
-- Version 0.2.2 features
-- Migration guides
-
-Notes:
-
-- Topics will be implemented based on user feedback
-- Documentation prioritized by usage patterns
-- Complex features documented as needed
-- Focus on maintaining existing docs quality
-
-# Backup System Redesign (v3.0.0)
-
-## Backup Creation Module
-The backup creation system will provide flexible, configurable backup management:
-
-### Core Features
+### Core Improvements
 - Multiple backup format support (JSON/TOML/plain text)
 - User-defined backup locations
 - Format conversion utilities
 - Shell configuration preservation
+- Backup validation and verification
 
 ### Implementation Plan
-1. Backup Creation (create.rs)
-   - Configurable format handlers
-   - Custom location management
-   - Backup validation
-   - Error handling
 
-2. Storage Management
-   - Format-specific serialization
-   - Location validation
-   - Space management
-   - Cleanup utilities
+#### Backup Creation
+- Configurable format handlers
+- Custom location management
+- Improved error handling
+- Backup compression options
 
-3. Format Conversion
-   - Between supported formats
-   - Data validation
-   - Migration tools
-   - Legacy format support
+#### Storage Management
+- Format-specific serialization
+- Location validation
+- Space management
+- Cleanup utilities
+
+#### Restoration
+- Point-in-time restoration
+- Partial restoration (PATH-only, shell-only)
+- Backup verification
+- Conflict resolution
+
+## Future Versions
+
+### Version 0.4.0
+- Interactive terminal UI
+- Enhanced error handling and reporting
+- Performance optimizations
+- Command output formatting options
+
+### Version 0.5.0
+- Advanced shell framework integrations
+- Profile management for different environments
+- System-wide vs. user-specific management
+
+### Version 1.0.0
+- Complete core functionality stabilization
+- Full test coverage
+- Comprehensive documentation
+- Performance benchmarks
+
+## Future Considerations
+
+- Cross-platform synchronization
+- Plugin system
+- GUI application
+- Cloud backup integration
+
+---
+
+Legend:
+- ✅ Implemented
+- ⚠️ Implemented but needs improvement
+- 🔄 In progress
+- 📅 Planned

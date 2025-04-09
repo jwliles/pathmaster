@@ -9,10 +9,20 @@ Version: 0.2.7
 
 ## Features
 
-- Safe PATH manipulation with automatic backups
+- Safe PATH manipulation
 - Smart shell configuration management
 - Comprehensive validation and error checking
+- Basic error prevention
+
+## Upcoming Features
+
+- Enhanced backup system with multiple formats (JSON/TOML/plain text)
+- User-defined backup locations
+- Format conversion utilities
 - Flexible backup modes for different needs
+- Complete shell configuration management
+
+See our [Roadmap](https://jwliles.github.io/pathmaster/ROADMAP.html) for more details.
 
 ## Quick Start
 
