@@ -83,6 +83,17 @@ Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md)
 - Feature requests
 - Pull requests
 
+### Development Branching Strategy
+
+> **Important for contributors:** During the Go migration, we're using a special branching strategy:
+> 
+> - `main` branch contains the stable Rust implementation
+> - `feature/go-migration` branch is the primary development branch for Go implementation
+> - New features and fixes for the Go version should branch from `feature/go-migration`
+> - Rust version fixes should still branch from `main`
+> 
+> This approach allows us to maintain the Rust version while developing the Go implementation in parallel.
+
 ## Requirements
 
 ### Rust Version
