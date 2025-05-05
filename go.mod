@@ -1,3 +1,3 @@
 module github.com/jwliles/pathmaster
 
-go 1.24.2
+go 1.20
