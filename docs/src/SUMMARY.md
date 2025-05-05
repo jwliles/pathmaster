@@ -30,6 +30,11 @@
 - [Backup Formats](reference/backup-formats.md)
 - [Configuration Options](reference/configuration.md)
 
+# Go Version
+- [Go Migration Overview](go-version/overview.md)
+- [Go Usage Differences](go-version/usage-differences.md)
+- [Go Feature Parity Status](go-version/feature-parity.md)
+
 # Project Information
 - [Roadmap](ROADMAP.md)
 - [ReadTheDocs](https://pathmaster.readthedocs.io/)
