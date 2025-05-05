@@ -1,9 +1,10 @@
 name: MDBook Documentation (Archived)
 
+# This workflow is archived since we now use ReadTheDocs.
+# It is kept for reference purposes only and does not run automatically.
+
 on:
-  push:
-    branches:
-      - main
+  # Disabled automatic triggers
   workflow_dispatch:
 
 jobs:

@@ -1,0 +1,53 @@
+name: ReadTheDocs Documentation
+
+on:
+  push:
+    branches:
+      - main
+      - feature/go-migration
+    paths:
+      - 'docs/**'
+      - '.readthedocs.yml'
+  workflow_dispatch:
+
+jobs:
+  trigger-readthedocs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Trigger ReadTheDocs build
+        env:
+          RTD_TOKEN: ${{ secrets.RTD_TOKEN }}
+          RTD_WEBHOOK: ${{ secrets.RTD_WEBHOOK }}
+        run: |
+          if [ -n "$RTD_WEBHOOK" ]; then
+            echo "Triggering ReadTheDocs webhook..."
+            curl -X POST -d "branches=feature/go-migration" -d "token=$RTD_TOKEN" $RTD_WEBHOOK
+            echo "ReadTheDocs build has been triggered."
+          else
+            echo "ReadTheDocs webhook URL not set. Please configure RTD_WEBHOOK and RTD_TOKEN secrets."
+          fi
+
+  validate-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r docs/requirements.txt
+
+      - name: Check Sphinx build
+        run: |
+          sphinx-build -b html docs docs/_build/html
+          echo "Documentation build successful"
