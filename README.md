@@ -2,11 +2,12 @@
 
 A powerful command-line tool for managing your system's PATH environment variable, providing safe and efficient PATH manipulation with automatic backups and validation.
 
-Version: 0.2.9
+> **Note:** This project is being migrated from Rust to Go. See [GO_MIGRATION_PLAN.md](GO_MIGRATION_PLAN.md) for details. The current Rust implementation remains fully functional.
+
+Version: 0.2.9 (Rust) | Dev (Go)
 
 [![Crates.io](https://img.shields.io/crates/v/pathmaster.svg)](https://crates.io/crates/pathmaster)
-[![Documentation](https://img.shields.io/badge/docs-ReadTheDocs-blue.svg)](https://pathmaster.readthedocs.io/)
-[![API Docs](https://docs.rs/pathmaster/badge.svg)](https://docs.rs/pathmaster)
+![Read the Docs](https://img.shields.io/readthedocs/pathmaster)
 
 ## Features
 
@@ -81,6 +82,20 @@ Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md)
 - Bug reports
 - Feature requests
 - Pull requests
+
+## Requirements
+
+### Rust Version
+- Rust (Minimum supported version: 1.68.0)
+- GNU/Linux or other free operating system
+- Standard system libraries
+
+### Go Version (Under Development)
+- Go 1.20+
+- GNU/Linux or other free operating system
+- Standard system libraries
+
+**Note**: Pathmaster is developed exclusively for free operating systems. It is not officially tested or supported on proprietary platforms.
 
 ## License
 
