@@ -64,7 +64,8 @@ Session.vim
 
 # Generated documentation
 /doc/
-/docs/target/
+/docs/_build/
+/docs/build/
 /docs/book/
 
 # Test coverage
