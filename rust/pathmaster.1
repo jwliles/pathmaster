@@ -1,0 +1,372 @@
+.TH PATHMASTER 1 "December 2024" "Version 0.2.5" "User Commands"
+
+.SH NAME
+pathmaster \- A powerful tool for managing your system's PATH environment variable
+
+.SH SYNOPSIS
+.B pathmaster
+[OPTIONS]
+.IR COMMAND
+[ARGUMENTS]
+
+.SH DESCRIPTION
+.B pathmaster
+is a comprehensive tool for managing your system's PATH environment variable. It provides functionality for adding and removing directories, validating PATH entries, managing backups, and maintaining PATH integrity.
+.B New in version 0.2.5:
+.RS
+.IP [bu] 2
+Enhanced documentation and examples
+.IP [bu]
+Improved error messages
+.IP [bu]
+Better shell detection
+.IP [bu]
+Expanded troubleshooting guide
+.RE
+.B New in version 0.2.3:
+.RS
+.IP [bu] 2
+Added configurable backup modes for selective backup creation
+.IP [bu]
+Interactive backup mode switching functionality
+.IP [bu]
+Enhanced backup system flexibility
+.IP [bu]
+Improved shell configuration handling
+.RE
+.B New in version 0.2.2:
+.RS
+.IP [bu] 2
+Enhanced PATH validation and scanning
+.IP [bu]
+Improved detection of PATH modifications
+.IP [bu]
+Better source identification for PATH entries
+.IP [bu]
+Enhanced shell configuration handling
+.RE
+
+.SH COMMANDS
+.TP
+.BR add ", " \-a " <directory>..."
+Add one or more directories to your PATH. Each directory is validated before addition.
+Multiple directories can be specified at once.
+
+.TP
+.BR delete ", " \-d " <directory>..."
+Remove one or more directories from your PATH.
+Alias: remove
+
+.TP
+.BR list ", " \-l
+List all current entries in your PATH, displaying them in a clear, readable format.
+
+.TP
+.BR history ", " \-y
+Show the backup history of your PATH, displaying available backups with timestamps.
+
+.TP
+.BR restore ", " \-r " [" \-\-timestamp " <timestamp>]"
+Restore your PATH from a previous backup. If no timestamp is provided, restores from the most recent backup.
+
+.TP
+.BR flush ", " \-f
+Remove all non-existing directories from your PATH automatically. This command:
+.RS
+.IP \[bu] 2
+Creates a backup of current PATH before modification
+.IP \[bu]
+Creates a backup of shell configuration file
+.IP \[bu]
+Identifies and removes all invalid directory entries
+.IP \[bu]
+Updates both current session PATH and shell configuration
+.IP \[bu]
+Provides detailed feedback about removed paths
+.IP \[bu]
+Maintains a backup for recovery if needed
+.RE
+
+.TP
+.BR check ", " \-c
+Validate current PATH entries, identifying invalid or missing directories. 
+.RS
+.IP [bu] 2
+Source identification for PATH entries
+.IP [bu]
+Sudo requirement detection
+.IP [bu]
+Shell-specific configuration details
+.IP [bu]
+Framework compatibility information
+.RE
+
+.SH OPTIONS
+.TP
+.BR --help
+Display help information about pathmaster and its commands.
+.TP
+.BR --version
+Display version information.
+.TP
+.BR --backup-mode " {default|path|shell|switch}"
+Control what gets backed up when modifying PATH:
+.RS
+.IP [bu] 2
+default: Back up both PATH and shell configuration (default behavior)
+.IP [bu]
+path: Back up only PATH entries
+.IP [bu]
+shell: Back up only shell configuration
+.IP [bu]
+switch: Toggle between PATH-only and shell-only backups
+.RE
+
+.SH VERSION FEATURES
+.SS Version 0.2.3
+.RS
+.IP [bu] 2
+Configurable backup modes for selective backup creation
+.IP [bu]
+Interactive backup mode switching
+.IP [bu]
+Enhanced backup system flexibility
+.IP [bu]
+Improved shell configuration handling
+.RE
+.SS Version 0.2.2
+.RS
+.IP [bu] 2
+Enhanced PATH validation and scanning capabilities
+.IP [bu]
+Improved detection of PATH modifications
+.IP [bu]
+Better source identification for PATH entries
+.IP [bu]
+Enhanced shell configuration handling
+.IP [bu]
+Fixed PATH entry detection issues
+.RE
+
+.SH EXAMPLES
+.SS Adding Directories
+Add a single directory:
+.PP
+.nf
+.RS
+pathmaster add ~/bin
+.RE
+.fi
+
+Add multiple directories:
+.PP
+.nf
+.RS
+pathmaster add ~/bin ~/scripts /usr/local/bin
+.RE
+.fi
+
+List PATH entries:
+.PP
+.nf
+.RS
+pathmaster list
+.RE
+.fi
+
+Check for invalid paths:
+.PP
+.nf
+.RS
+pathmaster check
+.RE
+.fi
+
+.SS Removing Directories
+Remove a directory:
+.PP
+.nf
+.RS
+pathmaster delete ~/old/bin
+.RE
+.fi
+
+Remove multiple directories:
+.PP
+.nf
+.RS
+pathmaster delete ~/old/bin ~/deprecated/scripts
+.RE
+.fi
+
+.SS Managing Backups
+View backup history:
+.PP
+.nf
+.RS
+pathmaster history
+.RE
+.fi
+Configure backup mode:
+.PP
+.nf
+.RS
+pathmaster --backup-mode path add ~/bin     # Back up only PATH
+pathmaster --backup-mode shell flush        # Back up only shell config
+pathmaster --backup-mode default            # Reset to backing up both
+pathmaster --backup-mode switch             # Toggle between modes
+.RE
+.fi
+
+Restore from specific backup:
+.PP
+.nf
+.RS
+pathmaster restore --timestamp 20240421120000
+.RE
+.fi
+
+Restore from most recent backup:
+.PP
+.nf
+.RS
+pathmaster restore
+.RE
+.fi
+
+.SS Maintaining PATH
+Remove invalid paths:
+.PP
+.nf
+.RS
+pathmaster flush
+.RE
+.fi
+
+Check for invalid directories:
+.PP
+.nf
+.RS
+pathmaster check
+.RE
+.fi
+
+.SH FILES
+.TP
+.I ~/.pathmaster_backups/
+Directory where PATH backups are stored as JSON files.
+
+.TP
+.I ~/.bashrc
+Bash shell configuration file that may be modified.
+
+.TP
+.I ~/.zshrc
+Zsh shell configuration file that may be modified.
+
+.TP
+.I ~/.profile
+Generic shell profile that may be modified if no specific shell is detected.
+
+.SH ENVIRONMENT
+.TP
+.B PATH
+The environment variable being managed.
+
+.TP
+.B SHELL
+Used to identify the appropriate configuration file to update.
+
+.TP
+.B HOME
+Used for expanding tildes (~) in paths and locating configuration files.
+
+.SH BACKUP FORMAT
+Backups are stored as JSON files with the following structure:
+.PP
+.nf
+.RS
+{
+  "timestamp": "20240421120000",
+  "path": "/usr/local/bin:/usr/bin:/bin:~/custom/bin"
+}
+.RE
+.fi
+.PP
+Shell configuration backups are stored with .bak extension before modification:
+.PP
+.nf
+.RS
+~/.bashrc.bak or ~/.zshrc.bak or ~/.profile.bak
+.RE
+.fi
+
+.SH EXIT STATUS
+.TP
+.B 0
+Success
+
+.TP
+.B 1
+General error (e.g., invalid directory, permission denied)
+
+.SH DIAGNOSTICS
+pathmaster provides clear error messages for common issues:
+.TP
+- Invalid directory warnings
+.TP
+- Permission denied errors
+.TP
+- Missing backup files
+.TP
+- Shell configuration update failures
+.PP
+When using the flush command, pathmaster provides detailed feedback:
+.IP \[bu] 2
+Lists each invalid path as it's removed
+.IP \[bu]
+Reports the total number of paths removed
+.IP \[bu]
+Confirms shell configuration updates
+.IP \[bu]
+Indicates backup creation status
+.IP \[bu]
+Warns if changes are session-only due to configuration update failures
+.PP
+When changing backup modes, pathmaster provides:
+.IP [bu] 2
+Clear feedback about current and new modes
+.IP [bu]
+Confirmation of mode changes
+.IP [bu]
+Warnings about potential consequences
+.IP [bu]
+Information about backup creation status
+
+.SH BUGS
+Report bugs to: https://github.com/jwliles/pathmaster/issues
+
+.SH AUTHOR
+Justin Wayne Liles
+
+.SH COPYRIGHT
+Copyright (c) 2024 Justin Wayne Liles.
+This is free software: you are free to change and redistribute it under the MIT License.
+
+.SH SEE ALSO
+.BR bash (1),
+.BR zsh (1),
+.BR env (1),
+.BR path (7)
+
+.SH NOTES
+.PP
+- Backups are created automatically before any PATH modification
+.PP
+- Shell configuration files are updated to make changes persistent
+.PP
+- Tilde (~) is automatically expanded to the user's home directory
+.PP
+- Directories are validated before being added to PATH
+.PP
+- PATH entries are kept unique (no duplicates)
