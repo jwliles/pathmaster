@@ -37,10 +37,20 @@ pathmaster add /opt/toolchain/bin
 pathmaster delete <directory>...
 ```
 
+### Interactive Removal (v0.3.0+)
+
+The delete command supports interactive multi-select removal, allowing you to choose multiple directories to remove at once:
+
+```bash
+# Interactive removal - presents a selection menu
+pathmaster delete
+```
+
 ### Features
 
-- Safe removal with backups
-- Handles multiple directories
+- **Interactive multi-select**: Choose directories from a menu
+- Safe removal with automatic backups
+- Handles multiple directories at once
 - Updates shell configuration
 - Maintains PATH order
 - Ignores non-existent paths
@@ -53,6 +63,10 @@ pathmaster delete ~/old/bin
 
 # Remove multiple directories
 pathmaster delete ~/old/bin ~/deprecated/scripts
+
+# Interactive removal with selection menu
+pathmaster delete
+# (This will show a multi-select interface)
 
 # Remove using full path
 pathmaster delete /opt/old-version/bin

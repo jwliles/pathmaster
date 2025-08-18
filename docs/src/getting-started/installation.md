@@ -96,6 +96,6 @@ No manual configuration is needed. Pathmaster will:
 
 ### Getting Help
 
-- [Check the documentation](https://jwliles.github.io/pathmaster)
+- [Check the documentation](https://pathmaster.readthedocs.io/)
 - [Report issues](https://github.com/jwliles/pathmaster/issues)
 - Man page: `man pathmaster`

@@ -26,10 +26,10 @@ Managing PATH manually can be risky and error-prone. Pathmaster helps by:
 
 ## Version Information
 
-Current version: 0.2.7
+Current version: 0.3.0
 
-- Enhanced documentation with MDBook
-- Improved shell configuration handling
-- In-place PATH updates in shell configs
-- Better error handling
+- Interactive multi-select removal functionality
+- Enhanced zshrc handling with improved multi-line support
+- Better error handling and validation
+- Improved shell configuration management
 - Comprehensive backup mode support

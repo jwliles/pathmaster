@@ -7,8 +7,8 @@ import os.path
 project = 'Pathmaster'
 copyright = '2025, Justin Wayne Liles'
 author = 'Justin Wayne Liles'
-version = '0.2.7'
-release = '0.2.7'
+version = '0.3.0'
+release = '0.3.0'
 
 # General configuration
 extensions = [

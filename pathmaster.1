@@ -1,4 +1,4 @@
-.TH PATHMASTER 1 "December 2024" "Version 0.2.5" "User Commands"
+.TH PATHMASTER 1 "August 2025" "Version 0.3.0" "User Commands"
 
 .SH NAME
 pathmaster \- A powerful tool for managing your system's PATH environment variable
@@ -12,16 +12,16 @@ pathmaster \- A powerful tool for managing your system's PATH environment variab
 .SH DESCRIPTION
 .B pathmaster
 is a comprehensive tool for managing your system's PATH environment variable. It provides functionality for adding and removing directories, validating PATH entries, managing backups, and maintaining PATH integrity.
-.B New in version 0.2.5:
+.B New in version 0.3.0:
 .RS
 .IP [bu] 2
-Enhanced documentation and examples
+Interactive multi-select removal functionality
 .IP [bu]
-Improved error messages
+Enhanced zshrc handling with improved multi-line support
 .IP [bu]
-Better shell detection
+Better error handling and validation
 .IP [bu]
-Expanded troubleshooting guide
+Improved shell configuration management
 .RE
 .B New in version 0.2.3:
 .RS
@@ -253,7 +253,7 @@ pathmaster check
 
 .SH FILES
 .TP
-.I ~/.pathmaster_backups/
+.I ~/.pathmaster/backups/
 Directory where PATH backups are stored as JSON files.
 
 .TP

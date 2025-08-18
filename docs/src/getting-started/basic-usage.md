@@ -31,10 +31,14 @@ pathmaster delete ~/old/bin
 
 # Multiple directories
 pathmaster delete ~/old/bin ~/deprecated/scripts
+
+# Interactive multi-select removal (v0.3.0+)
+pathmaster delete
 ```
 
 Key points:
 
+- **Interactive removal**: Use `pathmaster delete` without arguments for multi-select interface
 - Safe removal with automatic backups
 - Shell config is updated
 - Current session PATH is updated

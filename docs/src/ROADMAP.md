@@ -2,13 +2,18 @@
 
 This document outlines the current and planned features for Pathmaster, providing visibility into the project's direction and future development.
 
-## Current Features (v0.2.7)
+## Current Features (v0.3.0)
 
 ### Path Management
 - ✅ Add directories to PATH
-- ✅ Remove directories from PATH
+- ✅ Remove directories from PATH (with interactive multi-select)
 - ✅ List current PATH entries
 - ✅ Check paths for validity
+
+### Interactive Features
+- ✅ Interactive multi-select removal functionality
+- ✅ User-friendly prompts and confirmations
+- ✅ Enhanced user experience for bulk operations
 
 ### Validation
 - ✅ Identify invalid path entries
@@ -16,67 +21,46 @@ This document outlines the current and planned features for Pathmaster, providin
 - ✅ Prevent duplicates and circular references
 
 ### Shell Support
-- ✅ Basic shell configuration detection
-- ✅ Support for major shells (Bash, Zsh, Fish)
-- ✅ Configuration file path detection
+- ✅ Enhanced shell configuration detection
+- ✅ Support for major shells (Bash, Zsh, Fish, Tcsh, Ksh)
+- ✅ Improved zshrc handling with multi-line support
+- ✅ Better configuration file management
 
-### Basic Backup System (Current Implementation)
-- ✅ Create basic JSON backups of PATH
+### Backup System
+- ✅ Create JSON backups of PATH and shell configuration
 - ✅ Restore from backups
 - ✅ View backup history
-- ⚠️ Limited format options
-- ⚠️ Fixed backup location
-- ⚠️ Basic shell configuration handling
+- ✅ Multiple backup modes (default, path, shell, switch)
 
-## Backup System Improvements (v0.3.0)
+## Planned Improvements (v0.4.0)
 
-The existing backup system will be enhanced to provide more robust and flexible functionality:
-
-### Core Improvements
+### Enhanced Backup System
 - Multiple backup format support (JSON/TOML/plain text)
 - User-defined backup locations
 - Format conversion utilities
-- Shell configuration preservation
 - Backup validation and verification
-
-### Implementation Plan
-
-#### Backup Creation
-- Configurable format handlers
-- Custom location management
-- Improved error handling
 - Backup compression options
 
-#### Storage Management
-- Format-specific serialization
-- Location validation
-- Space management
-- Cleanup utilities
-
-#### Restoration
-- Point-in-time restoration
-- Partial restoration (PATH-only, shell-only)
-- Backup verification
-- Conflict resolution
-
-## Future Versions
-
-### Version 0.4.0
-- Interactive terminal UI
+### Terminal UI Enhancements
+- Interactive terminal UI improvements
+- Better command output formatting
 - Enhanced error handling and reporting
 - Performance optimizations
-- Command output formatting options
+
+## Future Versions
 
 ### Version 0.5.0
 - Advanced shell framework integrations
 - Profile management for different environments
 - System-wide vs. user-specific management
+- Configuration management improvements
 
 ### Version 1.0.0
 - Complete core functionality stabilization
 - Full test coverage
 - Comprehensive documentation
 - Performance benchmarks
+- API stability guarantees
 
 ## Future Considerations
 
