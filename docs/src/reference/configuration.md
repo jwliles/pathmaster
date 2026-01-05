@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326265
+title: configuration
+id: 8bb2c142-4514-49fb-9ca9-03256bcaab27
+hash: c53be684195712176f24761ac7550beac5f04ca14cb7f6c0e6ebda9219062285
+---
 # Configuration Options
 
 Pathmaster provides several configuration options to customize its behavior. This page documents all available options and how to use them.

@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326129
+title: README
+id: 9a8750fb-37a8-463c-9215-50c75e25422f
+hash: ac11c00e42428829413c3699476e379860e9ba53dbad128ae2928218f74a8e34
+---
 # pathmaster
 
 A powerful command-line tool for managing your system's PATH environment variable, providing safe and efficient PATH manipulation with automatic backups and validation.

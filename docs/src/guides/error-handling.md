@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326259
+title: error-handling
+id: c3d8a744-19e1-4e73-a81a-8629684fa866
+hash: ac73673cd6900873443b9c8a0c041f9440fa0a102e70f60dffcdbcff8eac3429
+---
 # Error Handling
 
 Pathmaster is designed to handle errors gracefully and provide clear, helpful error messages. This guide explains common errors you might encounter and how to resolve them.

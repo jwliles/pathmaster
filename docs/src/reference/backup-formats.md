@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326265
+title: backup-formats
+id: 9df9717a-b851-4cdc-9f45-11af3798c130
+hash: 092f80423338fedaf82ee83835f1dc0e0ef43c77e4e630bc24a02bb192671e68
+---
 # Backup Formats
 
 Pathmaster creates and manages backups of your PATH environment variable to ensure you can recover from unintended changes. This page details the backup formats and storage mechanisms.

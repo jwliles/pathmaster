@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326264
+title: validation
+id: a781d218-47f6-42ae-88b6-d35dce19bfa3
+hash: 675638b5473ae9131c4403f12a176dcd7c6a4d2395829749e915b1b82c9c95ce
+---
 # Validation
 
 pathmaster includes comprehensive validation functionality to ensure PATH integrity and prevent common issues.

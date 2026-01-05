@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326131
+title: CONTRIBUTING
+id: 41ea3b23-18bc-4f0d-add9-8820c4cfa752
+hash: 16d2abed053149cdba8efc1f916b2cc2c1ea39cc840a2a7f003a94e7b84cc918
+---
 # Contributing Guide
 
 Thank you for your interest in contributing! This document outlines the development workflow, style guide, and expectations for contributors across all tools in the Canopy (CNP) suite.

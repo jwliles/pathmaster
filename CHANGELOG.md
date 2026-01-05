@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326128
+title: CHANGELOG
+id: f65e7ba1-7e1b-4779-9144-96cea12e1809
+hash: 9a8697d2d884bb590589635cda3af08c9b322e2d389eb31bd02edd347e1d1e11
+---
 # Changelog
 
 ## [0.3.0] - 2025-08-17

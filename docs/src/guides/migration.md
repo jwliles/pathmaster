@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326260
+title: migration
+id: e2dcab15-d6f2-4b3e-9c82-df50eace24bd
+hash: 41fc8565d65881b8d6c8b4a74b710492872cdff3566e3785b19904fb971fbe60
+---
 # Migration Guide
 
 This guide helps you migrate from manual PATH management or other tools to pathmaster, and between different versions of pathmaster.

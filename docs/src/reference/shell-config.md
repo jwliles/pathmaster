@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326264
+title: shell-config
+id: 6c95b9b2-4123-4ef9-a6f9-2d5576012399
+hash: f02394e8ff917b60f2576c0f15e7e58b583596daf2fe9a716a42b01721eea7bb
+---
 # Shell Configuration
 
 Pathmaster interacts with your shell configuration files to make PATH changes persistent across sessions. This page details how pathmaster works with different shell environments.

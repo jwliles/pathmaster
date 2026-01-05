@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326225
+title: ROADMAP
+id: 731708b6-ea3c-4485-b719-4d4fb2014a12
+hash: b3839a28017c9800f2f01724fb02c8f36d501f7c9b443ebd11ff7702f951c320
+---
 # Pathmaster Roadmap
 
 This document outlines the current and planned features for Pathmaster, providing visibility into the project's direction and future development.

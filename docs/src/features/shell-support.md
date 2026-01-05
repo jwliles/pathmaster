@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326263
+title: shell-support
+id: 077277cc-ec19-4ed7-9186-94cdd9af6956
+hash: e4284d776f5e42adb4b571ab7d1d14b383f9d0bf70ec3515e6b09d386af8323d
+---
 # Shell Support
 
 pathmaster provides comprehensive support for various shell environments, ensuring consistent PATH management across different shells.

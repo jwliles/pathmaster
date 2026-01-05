@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326261
+title: validation
+id: 8a869741-0878-47ed-b980-334750b7390b
+hash: e9609428d358501153de65d17dbc9bd5d010256b0f74759d5519c59e6cad40b9
+---
 # Validation Commands
 
 ## Path Checking

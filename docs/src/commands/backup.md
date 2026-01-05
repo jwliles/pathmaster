@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326262
+title: backup
+id: e053708b-cde4-4c37-864c-f8bd793b8346
+hash: 3bdfa635d453e7ddf622795ebb160d7d13539a80b8b8471d5526edf0805308a8
+---
 # Backup Commands
 
 ## Backup Mode Selection

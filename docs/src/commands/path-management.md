@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326262
+title: path-management
+id: 9a0d9300-dbd3-45e6-915f-ace78259a81d
+hash: 49780634905f3a907fc3432ada6343be7f6e5b252a12870a5a940262c0e6ec1e
+---
 # PATH Management Commands
 
 ## Directory Addition

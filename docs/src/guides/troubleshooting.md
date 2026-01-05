@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326260
+title: troubleshooting
+id: aff544c6-81c6-4485-893c-87cee45eb8d8
+hash: ebe44de2b1969c9b5470b7f56775962af4a581630052c0416aa7cf7bfcbe4101
+---
 # Troubleshooting
 
 This guide helps you diagnose and resolve common issues you might encounter while using pathmaster.

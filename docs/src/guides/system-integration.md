@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326259
+title: system-integration
+id: b4c8729f-7283-46b5-bf20-9a84f69d9504
+hash: 02738da81ab73c972745d1ee6859e89fa6f741c1643b114d49266d5c0e488caa
+---
 # System Integration
 
 This guide explains how to integrate pathmaster with other tools, scripts, and system components for a seamless experience.

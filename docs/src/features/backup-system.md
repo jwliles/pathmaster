@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326262
+title: backup-system
+id: 4b2ba497-8c3e-4e5c-aff6-faa16617bac5
+hash: 57b29c68a94efcdf53dda11e1081d166d699e9e1779efc51050d537263c53a1c
+---
 # Backup System
 
 The pathmaster backup system provides comprehensive PATH and shell configuration backup capabilities with flexible modes and storage options.

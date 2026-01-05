@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326267
+title: installation
+id: 67e86317-1e58-44e6-8132-c0d88440a71a
+hash: 61b146172ab75bcdd020499a65b02389cc34aa0457c2aaaa702c630f473b9f0f
+---
 # Installation Guide
 
 ## System Requirements

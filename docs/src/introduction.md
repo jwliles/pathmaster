@@ -1,3 +1,11 @@
+---
+date_created: 2025-10-02T11-25-26
+date_updated: 2025-08-30T02-49-20
+timestamp: 1759404326226
+title: introduction
+id: b0705894-9a0e-4ba3-854f-48171d4daa3d
+hash: 8835f54101f3f83d0af17e76cc46ed2c4cb46ba372de11d3b7fe0a73d5d4d08e
+---
 # Introduction to pathmaster
 
 Pathmaster is a command-line tool for managing your system's PATH environment variable. It provides safe, efficient PATH manipulation with automatic backups and comprehensive validation.
