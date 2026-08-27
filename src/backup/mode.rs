@@ -10,20 +10,15 @@ use std::fmt;
 use std::str::FromStr;
 
 /// Represents available backup modes for pathmaster.
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub enum BackupMode {
     /// Backs up both PATH and shell configurations (default)
+    #[default]
     Both,
     /// Backs up only PATH entries
     PathOnly,
     /// Backs up only shell configuration
     ShellOnly,
-}
-
-impl Default for BackupMode {
-    fn default() -> Self {
-        Self::Both
-    }
 }
 
 impl fmt::Display for BackupMode {
@@ -86,17 +81,11 @@ pub enum ModeChangeResult {
 /// Manages backup mode state and transitions
 #[derive(Debug)]
 #[allow(dead_code)]
+#[derive(Default)]
 pub struct BackupModeManager {
     current_mode: BackupMode,
 }
 
-impl Default for BackupModeManager {
-    fn default() -> Self {
-        Self {
-            current_mode: BackupMode::default(),
-        }
-    }
-}
 #[allow(dead_code)]
 impl BackupModeManager {
     /// Creates a new BackupModeManager with default mode

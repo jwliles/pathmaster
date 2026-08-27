@@ -8,7 +8,7 @@
 //! - Validating PATH entries
 //! - Flushing invalid entries from PATH
 
-use clap::{command, Parser, Subcommand};
+use clap::{Parser, Subcommand};
 use commands::validator;
 
 mod backup;

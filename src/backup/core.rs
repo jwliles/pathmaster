@@ -25,12 +25,9 @@ pub struct Backup {
 /// Sets a custom backup directory (primarily for testing)
 #[allow(dead_code)]
 pub fn set_backup_dir(dir: PathBuf) -> io::Result<()> {
-    let mut backup_dir = BACKUP_DIR.lock().map_err(|_| {
-        io::Error::new(
-            io::ErrorKind::Other,
-            "Failed to lock backup directory mutex",
-        )
-    })?;
+    let mut backup_dir = BACKUP_DIR
+        .lock()
+        .map_err(|_| io::Error::other("Failed to lock backup directory mutex"))?;
     *backup_dir = Some(dir);
     Ok(())
 }
@@ -40,12 +37,9 @@ pub fn set_backup_dir(dir: PathBuf) -> io::Result<()> {
 /// # Returns
 /// * `PathBuf` containing the path to the backup directory
 pub fn get_backup_dir() -> io::Result<PathBuf> {
-    let backup_dir = BACKUP_DIR.lock().map_err(|_| {
-        io::Error::new(
-            io::ErrorKind::Other,
-            "Failed to lock backup directory mutex",
-        )
-    })?;
+    let backup_dir = BACKUP_DIR
+        .lock()
+        .map_err(|_| io::Error::other("Failed to lock backup directory mutex"))?;
 
     Ok(backup_dir.clone().unwrap_or_else(|| {
         let home_dir = dirs_next::home_dir().unwrap_or_else(|| PathBuf::from("/"));
@@ -80,10 +74,10 @@ pub fn create_backup() -> io::Result<()> {
 
     // Verify file was created
     if !backup_file.exists() {
-        return Err(io::Error::new(
-            io::ErrorKind::Other,
-            format!("Failed to create backup file at {:?}", backup_file),
-        ));
+        return Err(io::Error::other(format!(
+            "Failed to create backup file at {:?}",
+            backup_file
+        )));
     }
 
     Ok(())

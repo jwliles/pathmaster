@@ -130,14 +130,14 @@ impl ShellHandler for ZshHandler {
             // Insert new config at the position of the first PATH declaration
             // Remove newline prefix from format_path_export output
             let new_config = new_path_config.trim_start_matches('\n');
-            for (_i, line) in new_config.lines().rev().enumerate() {
+            for line in new_config.lines().rev() {
                 lines.insert(first_mod, line);
             }
 
-            return lines.join("\n");
+            lines.join("\n")
         } else {
             // No existing PATH declarations found, append to end
-            return content.to_string() + &new_path_config;
+            content.to_string() + &new_path_config
         }
     }
 }
